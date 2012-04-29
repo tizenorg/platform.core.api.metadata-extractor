@@ -1,0 +1,22 @@
+
+Source: capi-media-metadata-extractor
+Section: libs
+Priority: extra
+Maintainer: Haejeong Kim <backto.kim@samsung.com>, Seungkeun Lee <sngn.lee@samsung.com>, Kangho Hur<kangho.hur@samsung.com>
+Build-Depends: debhelper (>= 5), libmm-fileinfo-dev , capi-base-common-dev , dlog-dev
+
+Package: capi-media-metadata-extractor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A Metadata Extractor library in Tizen Native API
+
+Package: capi-media-metadata-extractor-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, capi-media-metadata-extractor (= ${Source-Version}), dlog-dev, capi-base-common-dev, libmm-fileinfo-dev
+Description: A Metadata Extractor library in Tizen Native API (DEV)
+
+Package: capi-media-metadata-extractor-dbg
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, capi-media-metadata-extractor (= ${Source-Version})
+Description: A Metadata Extractor library in Tizen Native API (DBG)
+

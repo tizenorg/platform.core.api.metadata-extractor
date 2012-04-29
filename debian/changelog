@@ -1,0 +1,7 @@
+capi-media-metadata-extractor (0.1.0-0) unstable; urgency=low
+
+  * Initial release
+  * Git: slp/api/metadata-extractor
+  * Tag: capi-media-metadata-extractor_0.1.0-0
+
+ -- Haejeong Kim <backto.kim@samsung.com>  Mon, 19 Mar 2012 12:10:16 +0900

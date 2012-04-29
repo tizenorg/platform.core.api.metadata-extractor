@@ -1,0 +1,21 @@
+15|0 3.7-lite 4|TCM Start
+400|0 1 1 03:32:00|IC Start
+200|0 1 03:32:00|TP Start
+520|-1 1 00002484 1 1|20000207 03:32:00__[__type=CheckPass, api_name=utc_wav_player_start_p, file=(null)/utc_wav_player.c, func=utc_wav_player_start_p, line=48__]__
+220|0 1 0 03:32:00|PASS
+410|0 1 1 03:32:00|IC End
+400|0 2 1 03:32:00|IC Start
+200|0 2 03:32:00|TP Start
+520|-1 2 00002484 1 2|20000207 03:32:00__[__type=CheckPass, api_name=utc_wav_player_start_n, file=(null)/utc_wav_player.c, func=utc_wav_player_start_n, line=54__]__
+220|0 2 0 03:32:00|PASS
+410|0 2 1 03:32:00|IC End
+400|0 3 1 03:32:00|IC Start
+200|0 3 03:32:00|TP Start
+520|-1 3 00002484 1 3|20000207 03:32:00__[__type=CheckPass, api_name=utc_wav_player_stop_p, file=(null)/utc_wav_player.c, func=utc_wav_player_stop_p, line=62__]__
+220|0 3 0 03:32:00|PASS
+410|0 3 1 03:32:00|IC End
+400|0 4 1 03:32:00|IC Start
+200|0 4 03:32:00|TP Start
+520|-1 4 00002484 1 4|20000207 03:32:00__[__type=CheckPass, api_name=utc_wav_player_stop_n, file=(null)/utc_wav_player.c, func=utc_wav_player_stop_n, line=68__]__
+220|0 4 0 03:32:00|PASS
+410|0 4 1 03:32:00|IC End
