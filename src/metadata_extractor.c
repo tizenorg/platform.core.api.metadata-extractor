@@ -31,47 +31,78 @@
 #endif
 #define LOG_TAG "TIZEN_N_METADATAEXTRACTOR"
 
+static int __metadata_extractor_check_and_extract_meta(metadata_extractor_s *metadata);
+static int __metadata_extractor_create_content_attrs(metadata_extractor_s *metadata, const char *path);
+static int __metadata_extractor_create_tag_attr(metadata_extractor_s *metadata, const char *path);
+static int __metadata_extractor_get_artwork(metadata_extractor_s *metadata, void **artwork, int *artwork_size);
+static int __metadata_extractor_get_artwork_mime(metadata_extractor_s *metadata, char **artwork_mime);
+static int __metadata_extractor_get_video_thumbnail(metadata_extractor_s *metadata, void **thumbnail, int *thumbnail_len);
+static int __metadata_extractor_get_duration(metadata_extractor_s *metadata, int *duration);
+static int __metadata_extractor_get_audio_bitrate(metadata_extractor_s *metadata, int *bitrate);
+static int __metadata_extractor_get_audio_channel(metadata_extractor_s *metadata, int *channel);
+static int __metadata_extractor_get_audio_samplerate(metadata_extractor_s *metadata, int *samplerate);
+static int __metadata_extractor_get_audio_track_count(metadata_extractor_s *metadata, int *track_cnt);
+static int __metadata_extractor_get_video_bitrate(metadata_extractor_s *metadata, int *bitrate);
+static int __metadata_extractor_get_video_FPS(metadata_extractor_s *metadata, int *fps);
+static int __metadata_extractor_get_video_width(metadata_extractor_s *metadata, int *width);
+static int __metadata_extractor_get_video_height(metadata_extractor_s *metadata, int *height);
+static int __metadata_extractor_get_video_track_count(metadata_extractor_s *metadata, int *track_cnt);
+static int __metadata_extractor_get_artist(metadata_extractor_s *metadata, char **artist);
+static int __metadata_extractor_get_title(metadata_extractor_s *metadata, char **title);
+static int __metadata_extractor_get_album(metadata_extractor_s *metadata, char **album);
+static int __metadata_extractor_get_genre(metadata_extractor_s *metadata, char **genre);
+static int __metadata_extractor_get_author(metadata_extractor_s *metadata, char **author);
+static int __metadata_extractor_get_copyright(metadata_extractor_s *metadata, char **copyright);
+static int __metadata_extractor_get_date(metadata_extractor_s *metadata, char **date);
+static int __metadata_extractor_get_description(metadata_extractor_s *metadata, char **description);
+static int __metadata_extractor_get_track_num(metadata_extractor_s *metadata, char **track_num);
+static int __metadata_extractor_get_classification(metadata_extractor_s *metadata, char **classification);
+static int __metadata_extractor_get_rating(metadata_extractor_s *metadata, char **rating);
+static int __metadata_extractor_get_longitude(metadata_extractor_s *metadata, double *longitude);
+static int __metadata_extractor_get_latitude(metadata_extractor_s *metadata, double *latitude);
+static int __metadata_extractor_get_altitude(metadata_extractor_s *metadata, double *altitude);
+static int __metadata_extractor_get_conductor(metadata_extractor_s *metadata, char **conductor);
+static int __metadata_extractor_get_unsynclyrics(metadata_extractor_s *metadata, char **unsynclyrics);
+static int __metadata_extractor_get_recording_date(metadata_extractor_s *metadata, char **rec_date);
+static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s *metadata, int *synclyrics_num);
+static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata);
 
-static int __metadata_extractor_create_content_attrs(metadata_extractor_s* metadata, const char* path);
-static int __metadata_extractor_create_tag_attr(metadata_extractor_s* metadata, const char* path);
-static int __metadata_extractor_get_artwork(metadata_extractor_s* metadata, void ** artwork, int * artwork_size);
-static int __metadata_extractor_get_artwork_mime(metadata_extractor_s* metadata, char ** artwork_mime);
-static int __metadata_extractor_get_video_thumbnail(metadata_extractor_s* metadata, void ** thumbnail, int * thumbnail_len);
-static int __metadata_extractor_get_duration(metadata_extractor_s* metadata, int * duration);
-static int __metadata_extractor_get_audio_bitrate(metadata_extractor_s* metadata, int * bitrate);
-static int __metadata_extractor_get_audio_channel(metadata_extractor_s* metadata, int * channel);
-static int __metadata_extractor_get_audio_samplerate(metadata_extractor_s* metadata, int * samplerate);
-static int __metadata_extractor_get_audio_track_count(metadata_extractor_s* metadata, int * track_cnt);
-static int __metadata_extractor_get_video_bitrate(metadata_extractor_s* metadata, int * bitrate);
-static int __metadata_extractor_get_video_FPS(metadata_extractor_s* metadata, int * fps);
-static int __metadata_extractor_get_video_width(metadata_extractor_s* metadata, int * width);
-static int __metadata_extractor_get_video_height(metadata_extractor_s* metadata, int * height);
-static int __metadata_extractor_get_video_track_count(metadata_extractor_s* metadata, int * track_cnt);
-static int __metadata_extractor_get_artist(metadata_extractor_s* metadata, char ** artist);
-static int __metadata_extractor_get_title(metadata_extractor_s* metadata, char ** title);
-static int __metadata_extractor_get_album(metadata_extractor_s* metadata, char ** album);
-static int __metadata_extractor_get_genre(metadata_extractor_s* metadata, char ** genre);
-static int __metadata_extractor_get_author(metadata_extractor_s* metadata, char ** author);
-static int __metadata_extractor_get_copyright(metadata_extractor_s* metadata, char ** copyright);
-static int __metadata_extractor_get_date(metadata_extractor_s* metadata, char ** date);
-static int __metadata_extractor_get_description(metadata_extractor_s* metadata, char ** description);
-static int __metadata_extractor_get_track_num(metadata_extractor_s* metadata, char ** track_num);
-static int __metadata_extractor_get_classification(metadata_extractor_s* metadata, char ** classification);
-static int __metadata_extractor_get_rating(metadata_extractor_s* metadata, char ** rating);
-static int __metadata_extractor_get_longitude(metadata_extractor_s* metadata, double * longitude);
-static int __metadata_extractor_get_latitude(metadata_extractor_s* metadata, double * latitude);
-static int __metadata_extractor_get_altitude(metadata_extractor_s* metadata, double * altitude);
-static int __metadata_extractor_get_conductor(metadata_extractor_s* metadata, char ** conductor);
-static int __metadata_extractor_get_unsynclyrics(metadata_extractor_s* metadata, char ** unsynclyrics);
-static int __metadata_extractor_get_recording_date(metadata_extractor_s* metadata, char ** rec_date);
-static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s* metadata, int * synclyrics_num);
-static int __metadata_extractor_destroy_handle(metadata_extractor_s* metadata);
+static int __metadata_extractor_check_and_extract_meta(metadata_extractor_s *metadata)
+{
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 
-static int __metadata_extractor_create_content_attrs(metadata_extractor_s* metadata, const char* path)
+	LOGI("[%s] enter \n", __FUNCTION__);
+
+	if(metadata->extract_meta)
+	{
+		LOGI("[%s] metadata already extracted \n", __FUNCTION__);
+		return ret;
+	}
+
+	ret = __metadata_extractor_create_content_attrs(metadata, metadata->path);
+	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+	{
+		return ret;
+	}
+
+	ret = __metadata_extractor_create_tag_attr(metadata, metadata->path);
+	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+	{
+		return ret;
+	}
+
+	metadata->extract_meta = true;
+
+	LOGI("[%s] leave \n", __FUNCTION__);
+
+	return ret;
+}
+
+static int __metadata_extractor_create_content_attrs(metadata_extractor_s *metadata, const char *path)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	MMHandleType content = 0;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 
 	int _audio_track_cnt = 0;
 	int _video_track_cnt = 0;
@@ -118,7 +149,7 @@ static int __metadata_extractor_create_content_attrs(metadata_extractor_s* metad
 }
 
 
-static int __metadata_extractor_create_tag_attr(metadata_extractor_s* metadata, const char* path)
+static int __metadata_extractor_create_tag_attr(metadata_extractor_s *metadata, const char *path)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	MMHandleType tag = 0;
@@ -147,10 +178,10 @@ static int __metadata_extractor_create_tag_attr(metadata_extractor_s* metadata, 
 
 }
 
-static int __metadata_extractor_get_duration(metadata_extractor_s* metadata, int * duration)
+static int __metadata_extractor_get_duration(metadata_extractor_s *metadata, int *duration)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _duration = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -172,10 +203,10 @@ static int __metadata_extractor_get_duration(metadata_extractor_s* metadata, int
 	return ret;
 }
 
-static int __metadata_extractor_get_audio_bitrate(metadata_extractor_s* metadata, int * bitrate)
+static int __metadata_extractor_get_audio_bitrate(metadata_extractor_s *metadata, int *bitrate)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _audio_bitrate = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -200,10 +231,10 @@ static int __metadata_extractor_get_audio_bitrate(metadata_extractor_s* metadata
 	return ret;
 }
 
-static int __metadata_extractor_get_audio_channel(metadata_extractor_s* metadata, int * channel)
+static int __metadata_extractor_get_audio_channel(metadata_extractor_s *metadata, int *channel)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _audio_channel = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -228,10 +259,10 @@ static int __metadata_extractor_get_audio_channel(metadata_extractor_s* metadata
 	return ret;
 }
 
-static int __metadata_extractor_get_audio_samplerate(metadata_extractor_s* metadata, int * samplerate)
+static int __metadata_extractor_get_audio_samplerate(metadata_extractor_s *metadata, int *samplerate)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _audio_samplerate = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -256,7 +287,7 @@ static int __metadata_extractor_get_audio_samplerate(metadata_extractor_s* metad
 	return ret;
 }
 
-static int __metadata_extractor_get_audio_track_count(metadata_extractor_s* metadata, int * track_cnt)
+static int __metadata_extractor_get_audio_track_count(metadata_extractor_s *metadata, int *track_cnt)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 
@@ -271,10 +302,10 @@ static int __metadata_extractor_get_audio_track_count(metadata_extractor_s* meta
 	return ret;
 }
 
-static int __metadata_extractor_get_video_bitrate(metadata_extractor_s* metadata, int * bitrate)
+static int __metadata_extractor_get_video_bitrate(metadata_extractor_s *metadata, int *bitrate)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _video_bitrate = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -298,10 +329,10 @@ static int __metadata_extractor_get_video_bitrate(metadata_extractor_s* metadata
 	return ret;
 }
 
-static int __metadata_extractor_get_video_FPS(metadata_extractor_s* metadata, int * fps)
+static int __metadata_extractor_get_video_FPS(metadata_extractor_s *metadata, int *fps)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _video_fps = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -326,10 +357,10 @@ static int __metadata_extractor_get_video_FPS(metadata_extractor_s* metadata, in
 	return ret;
 }
 
-static int __metadata_extractor_get_video_width(metadata_extractor_s* metadata, int * width)
+static int __metadata_extractor_get_video_width(metadata_extractor_s *metadata, int *width)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _video_width = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -354,10 +385,10 @@ static int __metadata_extractor_get_video_width(metadata_extractor_s* metadata, 
 	return ret;
 }
 
-static int __metadata_extractor_get_video_height(metadata_extractor_s* metadata, int * height)
+static int __metadata_extractor_get_video_height(metadata_extractor_s *metadata, int *height)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _video_height = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -382,11 +413,11 @@ static int __metadata_extractor_get_video_height(metadata_extractor_s* metadata,
 	return ret;
 }
 
-static int __metadata_extractor_get_video_thumbnail(metadata_extractor_s* metadata, void ** thumbnail, int * thumbnail_len)
+static int __metadata_extractor_get_video_thumbnail(metadata_extractor_s *metadata, void **thumbnail, int *thumbnail_len)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	void * _video_thumbnail = NULL;
+	char *err_attr_name = NULL;
+	void *_video_thumbnail = NULL;
 	int _video_thumbnail_len = 0;
 
 	if((!metadata) && (!metadata->attr_h))
@@ -412,7 +443,7 @@ static int __metadata_extractor_get_video_thumbnail(metadata_extractor_s* metada
 	return ret;
 }
 
-static int __metadata_extractor_get_video_track_count(metadata_extractor_s* metadata, int * track_cnt)
+static int __metadata_extractor_get_video_track_count(metadata_extractor_s *metadata, int *track_cnt)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 
@@ -427,11 +458,11 @@ static int __metadata_extractor_get_video_track_count(metadata_extractor_s* meta
 	return ret;
 }
 
-static int __metadata_extractor_get_artist(metadata_extractor_s* metadata, char ** artist)
+static int __metadata_extractor_get_artist(metadata_extractor_s *metadata, char **artist)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _artist = NULL;
+	char *err_attr_name = NULL;
+	char *_artist = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ARTIST, &_artist, &_tag_len, NULL);
@@ -447,11 +478,11 @@ static int __metadata_extractor_get_artist(metadata_extractor_s* metadata, char 
 	return ret;
 }
 
-static int __metadata_extractor_get_title(metadata_extractor_s* metadata, char ** title)
+static int __metadata_extractor_get_title(metadata_extractor_s *metadata, char **title)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _title = NULL;
+	char *err_attr_name = NULL;
+	char *_title = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_TITLE, &_title, &_tag_len, NULL);
@@ -467,11 +498,11 @@ static int __metadata_extractor_get_title(metadata_extractor_s* metadata, char *
 	return ret;
 }
 
-static int __metadata_extractor_get_album(metadata_extractor_s* metadata, char ** album)
+static int __metadata_extractor_get_album(metadata_extractor_s *metadata, char **album)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _album = NULL;
+	char *err_attr_name = NULL;
+	char *_album = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ALBUM, &_album, &_tag_len, NULL);
@@ -487,11 +518,11 @@ static int __metadata_extractor_get_album(metadata_extractor_s* metadata, char *
 	return ret;
 }
 
-static int __metadata_extractor_get_genre(metadata_extractor_s* metadata, char ** genre)
+static int __metadata_extractor_get_genre(metadata_extractor_s *metadata, char **genre)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _genre = NULL;
+	char *err_attr_name = NULL;
+	char *_genre = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_GENRE, &_genre, &_tag_len, NULL);
@@ -507,11 +538,11 @@ static int __metadata_extractor_get_genre(metadata_extractor_s* metadata, char *
 	return ret;
 }
 
-static int __metadata_extractor_get_author(metadata_extractor_s* metadata, char ** author)
+static int __metadata_extractor_get_author(metadata_extractor_s *metadata, char **author)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _author = NULL;
+	char *err_attr_name = NULL;
+	char *_author = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_AUTHOR, &_author, &_tag_len, NULL);
@@ -527,11 +558,11 @@ static int __metadata_extractor_get_author(metadata_extractor_s* metadata, char 
 	return ret;
 }
 
-static int __metadata_extractor_get_copyright(metadata_extractor_s* metadata, char ** copyright)
+static int __metadata_extractor_get_copyright(metadata_extractor_s *metadata, char **copyright)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _copyright = NULL;
+	char *err_attr_name = NULL;
+	char *_copyright = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_COPYRIGHT, &_copyright, &_tag_len, NULL);
@@ -547,11 +578,11 @@ static int __metadata_extractor_get_copyright(metadata_extractor_s* metadata, ch
 	return ret;
 }
 
-static int __metadata_extractor_get_date(metadata_extractor_s* metadata, char ** date)
+static int __metadata_extractor_get_date(metadata_extractor_s *metadata, char **date)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _date = NULL;
+	char *err_attr_name = NULL;
+	char *_date = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_DATE, &_date, &_tag_len, NULL);
@@ -567,11 +598,11 @@ static int __metadata_extractor_get_date(metadata_extractor_s* metadata, char **
 	return ret;
 }
 
-static int __metadata_extractor_get_description(metadata_extractor_s* metadata, char ** description)
+static int __metadata_extractor_get_description(metadata_extractor_s *metadata, char **description)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _description = NULL;
+	char *err_attr_name = NULL;
+	char *_description = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_DESCRIPTION, &_description, &_tag_len, NULL);
@@ -587,11 +618,11 @@ static int __metadata_extractor_get_description(metadata_extractor_s* metadata, 
 	return ret;
 }
 
-static int __metadata_extractor_get_artwork(metadata_extractor_s* metadata, void ** artwork, int * artwork_size)
+static int __metadata_extractor_get_artwork(metadata_extractor_s *metadata, void **artwork, int *artwork_size)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	void * _artwork = NULL;
+	char *err_attr_name = NULL;
+	void *_artwork = NULL;
 	int _artwork_size = 0;
 	int _tag_len = 0;
 
@@ -620,11 +651,11 @@ static int __metadata_extractor_get_artwork(metadata_extractor_s* metadata, void
 	return ret;
 }
 
-static int __metadata_extractor_get_artwork_mime(metadata_extractor_s* metadata, char ** artwork_mime)
+static int __metadata_extractor_get_artwork_mime(metadata_extractor_s *metadata, char **artwork_mime)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _artwork_mime = NULL;
+	char *err_attr_name = NULL;
+	char *_artwork_mime = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ARTWORK_MIME, &_artwork_mime, &_tag_len, NULL);
@@ -641,11 +672,11 @@ static int __metadata_extractor_get_artwork_mime(metadata_extractor_s* metadata,
 }
 
 
-static int __metadata_extractor_get_track_num(metadata_extractor_s* metadata, char ** track_num)
+static int __metadata_extractor_get_track_num(metadata_extractor_s *metadata, char **track_num)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _track_num = NULL;
+	char *err_attr_name = NULL;
+	char *_track_num = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_TRACK_NUM, &_track_num, &_tag_len, NULL);
@@ -661,11 +692,11 @@ static int __metadata_extractor_get_track_num(metadata_extractor_s* metadata, ch
 	return ret;
 }
 
-static int __metadata_extractor_get_classification(metadata_extractor_s* metadata, char ** classification)
+static int __metadata_extractor_get_classification(metadata_extractor_s *metadata, char **classification)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _classification = NULL;
+	char *err_attr_name = NULL;
+	char *_classification = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_CLASSIFICATION, &_classification, &_tag_len, NULL);
@@ -681,11 +712,11 @@ static int __metadata_extractor_get_classification(metadata_extractor_s* metadat
 	return ret;
 }
 
-static int __metadata_extractor_get_rating(metadata_extractor_s* metadata, char ** rating)
+static int __metadata_extractor_get_rating(metadata_extractor_s *metadata, char **rating)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _rating = NULL;
+	char *err_attr_name = NULL;
+	char *_rating = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_RATING, &_rating, &_tag_len, NULL);
@@ -701,10 +732,10 @@ static int __metadata_extractor_get_rating(metadata_extractor_s* metadata, char 
 	return ret;
 }
 
-static int __metadata_extractor_get_longitude(metadata_extractor_s* metadata, double * longitude)
+static int __metadata_extractor_get_longitude(metadata_extractor_s *metadata, double *longitude)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	double _longitude = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_LONGITUDE, &_longitude, NULL);
@@ -720,10 +751,10 @@ static int __metadata_extractor_get_longitude(metadata_extractor_s* metadata, do
 	return ret;
 }
 
-static int __metadata_extractor_get_latitude(metadata_extractor_s* metadata, double * latitude)
+static int __metadata_extractor_get_latitude(metadata_extractor_s *metadata, double *latitude)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	double _latitude = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_LATIDUE, &_latitude, NULL);
@@ -739,10 +770,10 @@ static int __metadata_extractor_get_latitude(metadata_extractor_s* metadata, dou
 	return ret;
 }
 
-static int __metadata_extractor_get_altitude(metadata_extractor_s* metadata, double * altitude)
+static int __metadata_extractor_get_altitude(metadata_extractor_s *metadata, double *altitude)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	double _altitude = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ALTIDUE, &_altitude, NULL);
@@ -758,11 +789,11 @@ static int __metadata_extractor_get_altitude(metadata_extractor_s* metadata, dou
 	return ret;
 }
 
-static int __metadata_extractor_get_conductor(metadata_extractor_s* metadata, char ** conductor)
+static int __metadata_extractor_get_conductor(metadata_extractor_s *metadata, char **conductor)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _conductor = NULL;
+	char *err_attr_name = NULL;
+	char *_conductor = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_CONDUCTOR, &_conductor, &_tag_len, NULL);
@@ -777,11 +808,11 @@ static int __metadata_extractor_get_conductor(metadata_extractor_s* metadata, ch
 
 	return ret;
 }
-static int __metadata_extractor_get_unsynclyrics(metadata_extractor_s* metadata, char ** unsynclyrics)
+static int __metadata_extractor_get_unsynclyrics(metadata_extractor_s *metadata, char **unsynclyrics)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _unsynclyrics = NULL;
+	char *err_attr_name = NULL;
+	char *_unsynclyrics = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_UNSYNCLYRICS, &_unsynclyrics, &_tag_len, NULL);
@@ -797,11 +828,11 @@ static int __metadata_extractor_get_unsynclyrics(metadata_extractor_s* metadata,
 	return ret;
 }
 
-static int __metadata_extractor_get_recording_date(metadata_extractor_s* metadata, char ** rec_date)
+static int __metadata_extractor_get_recording_date(metadata_extractor_s *metadata, char **rec_date)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
-	char * _rec_date = NULL;
+	char *err_attr_name = NULL;
+	char *_rec_date = NULL;
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_RECDATE, &_rec_date, &_tag_len, NULL);
@@ -817,10 +848,10 @@ static int __metadata_extractor_get_recording_date(metadata_extractor_s* metadat
 	return ret;
 }
 
-static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s* metadata, int * synclyrics_num)
+static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s *metadata, int *synclyrics_num)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * err_attr_name = NULL;
+	char *err_attr_name = NULL;
 	int _synclyrics_num = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_SYNCLYRICS_NUM, &_synclyrics_num, NULL);
@@ -836,7 +867,7 @@ static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s* me
 	return ret;
 }
 
-static int __metadata_extractor_destroy_handle(metadata_extractor_s* metadata)
+static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 
@@ -868,7 +899,7 @@ static int __metadata_extractor_destroy_handle(metadata_extractor_s* metadata)
 }
 
 
-int metadata_extractor_create(metadata_extractor_h* metadata)
+int metadata_extractor_create(metadata_extractor_h *metadata)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 
@@ -880,12 +911,17 @@ int metadata_extractor_create(metadata_extractor_h* metadata)
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
 	}
 
-	metadata_extractor_s* _metadata = (metadata_extractor_s*)calloc(1,sizeof(metadata_extractor_s));
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)calloc(1,sizeof(metadata_extractor_s));
 	if(_metadata == NULL)
 	{
 		LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY);
 		return METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY;
 	}
+
+	_metadata->path = NULL;
+	_metadata->extract_meta = false;
+	_metadata->audio_track_cnt = 0;
+	_metadata->video_track_cnt = 0;
 
 	*metadata = (metadata_extractor_h)_metadata;
 
@@ -894,10 +930,10 @@ int metadata_extractor_create(metadata_extractor_h* metadata)
 	return ret;
 }
 
-int metadata_extractor_set_path(metadata_extractor_h metadata, const char* path)
+int metadata_extractor_set_path(metadata_extractor_h metadata, const char *path)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	metadata_extractor_s* _metadata = (metadata_extractor_s*)metadata;
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)metadata;
 
 	LOGI("[%s] enter \n", __FUNCTION__);
 
@@ -909,30 +945,13 @@ int metadata_extractor_set_path(metadata_extractor_h metadata, const char* path)
 
 	LOGI("[%s] path [%s] \n", __FUNCTION__, path);
 
-	if((_metadata->attr_h) || (_metadata->tag_h))
+	if(_metadata->path != NULL)
 	{
-		LOGI("[%s]Handle already exist", __FUNCTION__);
-		ret = __metadata_extractor_destroy_handle(_metadata);
-		if(ret != METADATA_EXTRACTOR_ERROR_NONE)
-		{
-			LOGE("[%s]Fail to destory handle(0x%08x)", __FUNCTION__, ret);
-			return ret;
-		}
-
-		memset(_metadata, 0x00, sizeof(metadata_extractor_s));
+		SAFE_FREE(_metadata->path);
+		_metadata->extract_meta = false;
 	}
 
-	ret = __metadata_extractor_create_content_attrs(_metadata, path);
-	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
-	{
-		return ret;
-	}
-
-	ret = __metadata_extractor_create_tag_attr(_metadata, path);
-	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
-	{
-		return ret;
-	}
+	_metadata->path = strdup(path);
 
 	LOGI("[%s] leave \n", __FUNCTION__);
 
@@ -942,36 +961,45 @@ int metadata_extractor_set_path(metadata_extractor_h metadata, const char* path)
 int metadata_extractor_destroy(metadata_extractor_h metadata)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)metadata;
 
 	LOGI("[%s] enter \n", __FUNCTION__);
 
-	if(!metadata)
+	if(!_metadata)
 	{
 		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
 	}
 
-	ret = __metadata_extractor_destroy_handle(metadata);
+	ret = __metadata_extractor_destroy_handle(_metadata);
 
-	SAFE_FREE(metadata);
+	SAFE_FREE(_metadata->path);
+
+	SAFE_FREE(_metadata);
 
 	LOGI("[%s] leave \n", __FUNCTION__);
 
 	return ret;
 }
 
-int metadata_extractor_get_synclyrics(metadata_extractor_h metadata, int index, unsigned long *time_stamp, char ** lyrics)
+int metadata_extractor_get_synclyrics(metadata_extractor_h metadata, int index, unsigned long *time_stamp, char **lyrics)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	metadata_extractor_s* _metadata = (metadata_extractor_s*)metadata;
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)metadata;
 	unsigned long _time_info = 0;
-	char * _lyrics = NULL;
+	char *_lyrics = NULL;
 	int _synclyrics_num = 0;
 
-	if((!_metadata) || (!_metadata->attr_h) || (!_metadata->tag_h))
+	if((!_metadata) || (!_metadata->path))
 	{
 		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = __metadata_extractor_check_and_extract_meta(_metadata);
+	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+	{
+		return ret;
 	}
 
 	ret = __metadata_extractor_get_synclyrics_pair_num(_metadata, &_synclyrics_num);
@@ -1001,20 +1029,26 @@ int metadata_extractor_get_synclyrics(metadata_extractor_h metadata, int index, 
 	return ret;
 }
 
-int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extractor_attr_e attribute, char ** value)
+int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extractor_attr_e attribute, char **value)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	metadata_extractor_s* _metadata = (metadata_extractor_s*)metadata;
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)metadata;
 	int i_value = 0;
 	double d_value = 0;
-	char * s_value = NULL;
+	char *s_value = NULL;
 	int is_string = 0;
 	int is_double = 0;
 
-	if((!_metadata) || (!_metadata->attr_h) || (!_metadata->tag_h))
+	if((!_metadata) || (!_metadata->path))
 	{
 		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = __metadata_extractor_check_and_extract_meta(_metadata);
+	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+	{
+		return ret;
 	}
 
 	switch (attribute) {
@@ -1234,18 +1268,26 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 	return ret;
 }
 
-int metadata_extractor_get_artwork(metadata_extractor_h metadata, void ** artwork, int * size, char ** mime_type)
+int metadata_extractor_get_artwork(metadata_extractor_h metadata, void **artwork, int *size, char **mime_type)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	metadata_extractor_s* _metadata = (metadata_extractor_s*)metadata;
-	void * _artwork = NULL;
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)metadata;
+	void *_artwork = NULL;
 	int _artwork_size = 0;
-	char * _artwork_mime = NULL;
+	char *_artwork_mime = NULL;
 
-	if((!_metadata) || (!_metadata->attr_h) || (!_metadata->tag_h))
+	LOGI("[%s] enter \n", __FUNCTION__);
+
+	if((!_metadata) || (!_metadata->path))
 	{
 		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = __metadata_extractor_check_and_extract_meta(_metadata);
+	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+	{
+		return ret;
 	}
 
 	ret = __metadata_extractor_get_artwork(_metadata, &_artwork, &_artwork_size);
@@ -1291,20 +1333,30 @@ int metadata_extractor_get_artwork(metadata_extractor_h metadata, void ** artwor
 		*size = 0;
 	}
 
+	LOGI("[%s] leave \n", __FUNCTION__);
+
 	return ret;
 }
 
-int metadata_extractor_get_frame(metadata_extractor_h metadata, void ** frame, int * size)
+int metadata_extractor_get_frame(metadata_extractor_h metadata, void **frame, int *size)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	metadata_extractor_s* _metadata = (metadata_extractor_s*)metadata;
-	void * _frame = NULL;
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)metadata;
+	void *_frame = NULL;
 	int _frame_size = 0;
 
-	if((!_metadata) || (!_metadata->attr_h) || (!_metadata->tag_h))
+	LOGI("[%s] enter \n", __FUNCTION__);
+
+	if((!_metadata) || (!_metadata->path) || (!size))
 	{
 		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = __metadata_extractor_check_and_extract_meta(_metadata);
+	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+	{
+		return ret;
 	}
 
 	ret = __metadata_extractor_get_video_thumbnail(_metadata, &_frame, &_frame_size);
@@ -1329,6 +1381,57 @@ int metadata_extractor_get_frame(metadata_extractor_h metadata, void ** frame, i
 		*frame = NULL;
 		*size = 0;
 	}
+
+	LOGI("[%s] leave \n", __FUNCTION__);
+
+	return ret;
+}
+
+int metadata_extractor_get_frame_at_time(metadata_extractor_h metadata, unsigned long timestamp, bool is_accurate, void **frame, int *size)
+{
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	metadata_extractor_s *_metadata = (metadata_extractor_s*)metadata;
+	void *_frame = NULL;
+	int _frame_size = 0;
+	int width = 0;
+	int height = 0;
+	long micro_timestamp = 0;
+
+	LOGI("[%s] enter \n", __FUNCTION__);
+
+	if((!_metadata) || (!_metadata->path) || (timestamp < 0) || (!size))
+	{
+		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
+		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	micro_timestamp = timestamp * 1000;
+
+	ret = mm_file_get_video_frame(_metadata->path, micro_timestamp, is_accurate, (unsigned char **)&_frame, &_frame_size, &width, &height);
+	if(ret != MM_ERROR_NONE)
+	{
+		LOGE("[%s]ERROR_UNKNOWN(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_OPERATION_FAILED);
+		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
+	}
+
+	if((_frame_size > 0) && (_frame != NULL))
+	{
+		*frame = calloc(1, _frame_size);
+		if(*frame == NULL)
+		{
+			LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY);
+			return METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY;
+		}
+		memcpy(*frame, _frame, _frame_size);
+		*size = _frame_size;
+	}
+	else
+	{
+		*frame = NULL;
+		*size = 0;
+	}
+
+	LOGI("[%s] leave \n", __FUNCTION__);
 
 	return ret;
 }

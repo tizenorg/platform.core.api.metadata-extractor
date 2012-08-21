@@ -43,6 +43,8 @@ static void utc_metadata_extractor_get_artwork_n(void);
 static void utc_metadata_extractor_get_artwork_p(void);
 static void utc_metadata_extractor_get_frame_n(void);
 static void utc_metadata_extractor_get_frame_p(void);
+static void utc_metadata_extractor_get_frame_at_time_n(void);
+static void utc_metadata_extractor_get_frame_at_time_p(void);
 static void utc_metadata_extractor_get_synclyrics_n(void);
 static void utc_metadata_extractor_get_synclyrics_p(void);
 
@@ -60,6 +62,8 @@ struct tet_testlist tet_testlist[] = {
 	{ utc_metadata_extractor_get_frame_p, 2 },
 	{ utc_metadata_extractor_get_synclyrics_n, 2 },
 	{ utc_metadata_extractor_get_synclyrics_p, 2 },
+	{ utc_metadata_extractor_get_frame_at_time_n, 2 },
+	{ utc_metadata_extractor_get_frame_at_time_p, 2 },
 	{ utc_metadata_extractor_destroy_n, 3 },
 	{ utc_metadata_extractor_destroy_p, 3 },
 	{ NULL, 0 },
@@ -132,7 +136,7 @@ static void utc_metadata_extractor_set_path_p(void)
 static void utc_metadata_extractor_get_metadata_n(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * value = NULL;
+	char *value = NULL;
 
 	ret = metadata_extractor_get_metadata(metadata, -1, &value);
 
@@ -145,7 +149,7 @@ static void utc_metadata_extractor_get_metadata_n(void)
 static void utc_metadata_extractor_get_metadata_p(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	char * value = NULL;
+	char *value = NULL;
 
 	ret = metadata_extractor_get_metadata(metadata, METADATA_TITLE, &value);
 	if(value)
@@ -160,8 +164,8 @@ static void utc_metadata_extractor_get_metadata_p(void)
 static void utc_metadata_extractor_get_artwork_n(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	void * artwork = NULL;
-	char * artwork_mime = NULL;
+	void *artwork = NULL;
+	char *artwork_mime = NULL;
 	int artwork_size = 0;
 
 	ret = metadata_extractor_get_artwork(NULL, &artwork, &artwork_size, &artwork_mime);
@@ -175,8 +179,8 @@ static void utc_metadata_extractor_get_artwork_n(void)
 static void utc_metadata_extractor_get_artwork_p(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	void * artwork = NULL;
-	char * artwork_mime = NULL;
+	void *artwork = NULL;
+	char *artwork_mime = NULL;
 	int artwork_size = 0;
 
 	ret = metadata_extractor_get_artwork(metadata, &artwork, &artwork_size, &artwork_mime);
@@ -194,7 +198,7 @@ static void utc_metadata_extractor_get_artwork_p(void)
 static void utc_metadata_extractor_get_frame_n(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	void * frame = NULL;
+	void *frame = NULL;
 	int frame_size = 0;
 
 	ret = metadata_extractor_get_frame(NULL, &frame, &frame_size);
@@ -208,7 +212,7 @@ static void utc_metadata_extractor_get_frame_n(void)
 static void utc_metadata_extractor_get_frame_p(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	void * frame = NULL;
+	void *frame = NULL;
 	int frame_size = 0;
 
 	ret = metadata_extractor_get_frame(metadata, &frame, &frame_size);
@@ -219,13 +223,43 @@ static void utc_metadata_extractor_get_frame_p(void)
 }
 
 /**
+ * @brief Negative test case of metadata_extractor_get_frame_at_time()
+ */
+static void utc_metadata_extractor_get_frame_at_time_n(void)
+{
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	void *frame = NULL;
+	int frame_size = 0;
+
+	ret = metadata_extractor_get_frame_at_time(NULL, 0, true, &frame, &frame_size);
+
+	dts_check_eq("utc_metadata_extractor_get_frame_at_time_n", ret, METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER, "Must return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER in case of invalid parameter");
+}
+
+/**
+ * @brief Positive test case of metadata_extractor_get_frame_at_time()
+ */
+static void utc_metadata_extractor_get_frame_at_time_p(void)
+{
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	void *frame = NULL;
+	int frame_size = 0;
+
+	ret = metadata_extractor_get_frame_at_time(metadata, 22500, true, &frame, &frame_size);
+	if(frame)
+		free(frame);
+
+	dts_check_eq("utc_metadata_extractor_get_frame_at_time_p", ret, METADATA_EXTRACTOR_ERROR_NONE, "Failed to get frame");
+}
+
+/**
  * @brief Negative test case of metadata_extractor_get_synclyrics()
  */
 static void utc_metadata_extractor_get_synclyrics_n(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	unsigned long  time_info = 0;
-	char * lyrics = NULL;
+	unsigned long time_info = 0;
+	char *lyrics = NULL;
 
 	ret = metadata_extractor_get_synclyrics(NULL, 1, &time_info, &lyrics);
 
@@ -238,8 +272,8 @@ static void utc_metadata_extractor_get_synclyrics_n(void)
 static void utc_metadata_extractor_get_synclyrics_p(void)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
-	unsigned long  time_info = 0;
-	char * lyrics = NULL;
+	unsigned long time_info = 0;
+	char *lyrics = NULL;
 
 	ret = metadata_extractor_get_synclyrics(metadata, 1, &time_info, &lyrics);
 	if(lyrics)

@@ -18,7 +18,7 @@
 #ifndef __TIZEN_MEDIA_METADATA_EXTRACTOR_PRIVATE_H__
 #define __TIZEN_MEDIA_METADATA_EXTRACTOR_PRIVATE_H__
 
-
+#include <stdbool.h>
 #include <mm_types.h>
 
 
@@ -29,6 +29,9 @@ extern "C" {
 
 typedef struct
 {
+	char *path;
+	bool extract_meta;
+
 	int audio_track_cnt;
 	int video_track_cnt;
 

@@ -1,16 +1,15 @@
+#sbs-git:slp/api/metadata-extractor capi-media-metadata-extractor 0.1.0 6b3c03f72f7fd67cdee06dbde70eb2e10335b57a
 Name:       capi-media-metadata-extractor
 Summary:    A media metadata extractor library in SLP C API
 Version: 0.1.0
-Release:    2
+Release:    4
 Group:      TO_BE/FILLED_IN
 License:    TO BE FILLED IN
 Source0:    %{name}-%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(mm-fileinfo)
-BuildRequires:  pkgconfig(mm-player)
 BuildRequires:  pkgconfig(capi-base-common)
-BuildRequires:  pkgconfig(capi-media-sound-manager)
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -20,6 +19,7 @@ A media metadata extractor  library in SLP C API
 %package devel
 Summary:  A media metadata extractor  library in SLP C API (Development)
 Group:    TO_BE/FILLED_IN
+Requires: %{name} = %{version}-%{release}
 
 %description devel
 A media metadata extractor  library in SLP C API
@@ -45,9 +45,9 @@ rm -rf %{buildroot}
 
 
 %files
+/usr/lib/libcapi-media-metadata-extractor.so
 
 %files devel
 /usr/include/media/*.h
-/usr/lib/libcapi-media-metadata-extractor.so
 /usr/lib/pkgconfig/capi-media-metadata-extractor.pc
 

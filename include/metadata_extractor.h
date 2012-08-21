@@ -44,11 +44,11 @@ extern "C" {
  * @param [in] metadata The handle to metadata
  * @return 0 on success, otherwise a negative error value
  * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
- * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER  Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY Not enough memory is available
  * @see metadata_extractor_destroy()
  */
-int metadata_extractor_create(metadata_extractor_h* metadata);
+int metadata_extractor_create(metadata_extractor_h *metadata);
 
 
 /**
@@ -58,13 +58,13 @@ int metadata_extractor_create(metadata_extractor_h* metadata);
  * @param [in] path path to extract metadata
  * @return 0 on success, otherwise a negative error value
  * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
- * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER  Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #METADATA_EXTRACTOR_ERROR_FILE_EXISTS File not exist
  * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
  * @pre Create metadata handle by calling metadata_extractor_create()
  * @see metadata_extractor_create(), metadata_extractor_destroy()
  */
-int metadata_extractor_set_path(metadata_extractor_h metadata, const char* path);
+int metadata_extractor_set_path(metadata_extractor_h metadata, const char *path);
 
 
 /**
@@ -73,7 +73,7 @@ int metadata_extractor_set_path(metadata_extractor_h metadata, const char* path)
  * @param [in] metadata The handle to metadata
  * @return 0 on success, otherwise a negative error value
  * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
- * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER  Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
  * @pre Create metadata handle by calling metadata_extractor_create()
  * @see metadata_extractor_create()
@@ -91,13 +91,13 @@ int metadata_extractor_destroy(metadata_extractor_h metadata);
  * @param [out] value The value of the attribute
  * @return 0 on success, otherwise a negative error value
  * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
- * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER  Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY Not enough memory is available
  * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
  * @pre Set path to extract by calling metadata_extractor_set_path()
  * @see metadata_extractor_create(), metadata_extractor_destroy()
  */
-int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extractor_attr_e attribute, char ** value);
+int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extractor_attr_e attribute, char **value);
 
 
 /**
@@ -111,13 +111,13 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
  * @param [out] mime_type mime type of artwork
  * @return 0 on success, otherwise a negative error value
  * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
- * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER  Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY Not enough memory is available
  * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
  * @pre Set path to extract by calling metadata_extractor_set_path()
  * @see metadata_extractor_create(), metadata_extractor_destroy()
  */
-int metadata_extractor_get_artwork(metadata_extractor_h metadata, void ** artwork, int * size, char ** mime_type);
+int metadata_extractor_get_artwork(metadata_extractor_h metadata, void **artwork, int *size, char **mime_type);
 
 
 /**
@@ -126,17 +126,17 @@ int metadata_extractor_get_artwork(metadata_extractor_h metadata, void ** artwor
  * @remarks @a frame must be released with @c free() by you
  *
  * @param [in] metadata The handle to metadata
- * @param [out] frame raw frame data
+ * @param [out] frame raw frame data in RGB888
  * @param [out] size The frame data size
  * @return 0 on success, otherwise a negative error value
  * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
- * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER  Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY Not enough memory is available
  * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
  * @pre Set path to extract by calling metadata_extractor_set_path()
  * @see metadata_extractor_create(), metadata_extractor_destroy()
  */
-int metadata_extractor_get_frame(metadata_extractor_h metadata, void ** frame, int * size);
+int metadata_extractor_get_frame(metadata_extractor_h metadata, void **frame, int *size);
 
 
 /**
@@ -150,13 +150,35 @@ int metadata_extractor_get_frame(metadata_extractor_h metadata, void ** frame, i
  * @param [out] lyrics Lyric of index
  * @return 0 on success, otherwise a negative error value
  * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
- * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER  Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
  * @pre Set path to extract by calling metadata_extractor_set_path()
  * @pre Get time/lyrics set number by calling metadata_extractor_get_metadata(METADATA_SYNCLYRICS_NUM)
  * @see metadata_extractor_create(), metadata_extractor_destroy()
  */
-int metadata_extractor_get_synclyrics(metadata_extractor_h metadata, int index, unsigned long *time_stamp, char ** lyrics);
+int metadata_extractor_get_synclyrics(metadata_extractor_h metadata, int index, unsigned long *time_stamp, char **lyrics);
+
+/**
+ * @brief Get a frame of video media
+ *
+ * @remarks @a frame must be released with @c free() by you
+ *
+ * @param [in] metadata The handle to metadata
+ * @param [in] timestamp The timestamp in milliseconds
+ * @param [in] is_accurate @a true, user can get an accurated frame for given the timestamp.\n
+ * @a false, user can only get the nearest i-frame of video rapidly.
+ * @param [out] frame raw frame data in RGB888
+ * @param [out] size The frame data size
+ * @return 0 on success, otherwise a negative error value
+ * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY Not enough memory is available
+ * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
+ * @pre Set path to extract by calling metadata_extractor_set_path()
+ * @see metadata_extractor_create(), metadata_extractor_destroy()
+ */
+
+int metadata_extractor_get_frame_at_time(metadata_extractor_h metadata, unsigned long timestamp, bool is_accurate, void **frame, int *size);
 
 /**
  * @}

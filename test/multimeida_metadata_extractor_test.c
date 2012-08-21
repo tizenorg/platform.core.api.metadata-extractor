@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include <dlog.h>
 #include <metadata_extractor.h>
 
@@ -36,7 +37,7 @@ static int _is_file_exist (const char *filename)
 {
 	int ret = 1;
 	if (filename) {
-		const char* to_access = (strstr(filename,"file://")!=NULL)? filename+7:filename;
+		const char *to_access = (strstr(filename,"file://")!=NULL)? filename+7:filename;
 		ret = access (to_access, R_OK );
 		if (ret != 0) {
 			LOGI("file [%s] not found.\n", to_access);
@@ -45,48 +46,49 @@ static int _is_file_exist (const char *filename)
 	return !ret;
 }
 
-//bool capi_metadata_extractor_cb(metadata_extractor_h metadata, void* user_data)
 static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 {
-	char * duration = 0;
-	char * audio_bitrate = 0;
-	char * audio_channel = 0;
-	char * audio_samplerate = 0;
-	char * audio_track_cnt = 0;
-	char * video_bitrate = 0;
-	char * video_fps = 0;
-	char * video_width = 0;
-	char * video_height = 0;
-	char * video_track_cnt = 0;
-	void * video_thumbnail = NULL;
+	char *duration = 0;
+	char *audio_bitrate = 0;
+	char *audio_channel = 0;
+	char *audio_samplerate = 0;
+	char *audio_track_cnt = 0;
+	char *video_bitrate = 0;
+	char *video_fps = 0;
+	char *video_width = 0;
+	char *video_height = 0;
+	char *video_track_cnt = 0;
+	void *video_thumbnail = NULL;
 	int video_thumbnail_len = 0;
+	void *video_frame = NULL;
+	int video_frame_len = 0;
 
 	/*Tag info*/
-	char * artist = NULL;
-	char * title = NULL;
-	char * album = NULL;
-	char * genre = NULL;
-	char * author = NULL;
-	char * copyright = NULL;
-	char * date = NULL;
-	char * description = NULL;
-	void * artwork = NULL;
+	char *artist = NULL;
+	char *title = NULL;
+	char *album = NULL;
+	char *genre = NULL;
+	char *author = NULL;
+	char *copyright = NULL;
+	char *date = NULL;
+	char *description = NULL;
+	void *artwork = NULL;
 	int artwork_size = 0;
-	char * artwork_mime = NULL;
-	char * track_num = NULL;
-	char * classification = NULL;
-	char * rating = NULL;
-	char * longitude = 0;
-	char * latitude = 0;
-	char * altitude = 0;
-	char * conductor = NULL;
-	char * unsynclyrics = NULL;
-	char * synclyrics_num = 0;
-	char * rec_date = NULL;
+	char *artwork_mime = NULL;
+	char *track_num = NULL;
+	char *classification = NULL;
+	char *rating = NULL;
+	char *longitude = 0;
+	char *latitude = 0;
+	char *altitude = 0;
+	char *conductor = NULL;
+	char *unsynclyrics = NULL;
+	char *synclyrics_num = 0;
+	char *rec_date = NULL;
 
 	int idx = 0;
-	unsigned long  time_info = 0;
-	char * lyrics = NULL;
+	unsigned long time_info = 0;
+	char *lyrics = NULL;
 
 	if(metadata == NULL)
 	{
@@ -169,6 +171,10 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	metadata_extractor_get_frame(metadata, &video_thumbnail, &video_thumbnail_len);
 	LOGI("video_thumbnail[%p], video_thumbnail_len = [%d]\n\n", video_thumbnail, video_thumbnail_len);
 
+	/*Get Video frame at time, extract frame of 22.5 sec and not key frame*/
+	metadata_extractor_get_frame_at_time(metadata, 22500, false, &video_frame, &video_frame_len);
+	LOGI("video_frame[%p], video_frame_len = [%d]\n\n", video_frame, video_frame_len);
+
 	SAFE_FREE(duration );
 	SAFE_FREE(audio_bitrate );
 	SAFE_FREE(audio_channel );
@@ -180,6 +186,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	SAFE_FREE(video_height );
 	SAFE_FREE(video_track_cnt );
 	SAFE_FREE(video_thumbnail);
+	SAFE_FREE(video_frame);
 
 	SAFE_FREE(artist);
 	SAFE_FREE(title);
