@@ -1,4 +1,3 @@
-#sbs-git:slp/api/metadata-extractor capi-media-metadata-extractor 0.1.0 6b3c03f72f7fd67cdee06dbde70eb2e10335b57a
 Name:       capi-media-metadata-extractor
 Summary:    A media metadata extractor library in SLP C API
 Version: 0.1.0
