@@ -24,6 +24,20 @@
 
 #define SAFE_FREE(src)      { if(src) {free(src); src = NULL;}}
 
+#define READ_FROM_FILE(FILE_PATH, data, size) \
+do{	\
+	FILE * fp = fopen (FILE_PATH, "r");	\
+	if (fp) {	\
+			fseek (fp, 0, SEEK_END);	\
+			size = ftell(fp);	\
+			fseek (fp, 0, SEEK_SET);	\
+			data = malloc (size);	\
+			fread (data, size, sizeof(char), fp);	\
+			fclose (fp);	\
+			printf("file size = %d\n", size );	\
+	}	\
+}while(0)
+
 static int _is_file_exist (const char *filename);
 static bool __capi_metadata_extractor(metadata_extractor_h metadata);
 
@@ -66,6 +80,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	char *copyright = NULL;
 	char *date = NULL;
 	char *description = NULL;
+	char *comment = NULL;
 	void *artwork = NULL;
 	int artwork_size = 0;
 	char *artwork_mime = NULL;
@@ -79,6 +94,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	char *unsynclyrics = NULL;
 	char *synclyrics_num = 0;
 	char *rec_date = NULL;
+	char *rotate = NULL;
 
 	int idx = 0;
 	unsigned long time_info = 0;
@@ -128,6 +144,8 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("date = [%s]\n", date);
 	metadata_extractor_get_metadata(metadata, METADATA_DESCRIPTION, &description);
 	printf("description = [%s]\n", description);
+	metadata_extractor_get_metadata(metadata, METADATA_COMMENT, &comment);
+	printf("comment = [%s]\n", comment);
 	metadata_extractor_get_metadata(metadata, METADATA_TRACK_NUM, &track_num);
 	printf("track_num = [%s]\n", track_num);
 	metadata_extractor_get_metadata(metadata, METADATA_CLASSIFICATION, &classification);
@@ -146,6 +164,8 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("unsynclyrics = [%s]\n", unsynclyrics);
 	metadata_extractor_get_metadata(metadata, METADATA_RECDATE, &rec_date);
 	printf("rec_date = [%s]\n", rec_date);
+	metadata_extractor_get_metadata(metadata, METADATA_ROTATE, &rotate);
+	printf("rotate = [%s]\n", rotate);
 
 	metadata_extractor_get_metadata(metadata, METADATA_SYNCLYRICS_NUM, &synclyrics_num);
 	int s_num = atoi(synclyrics_num);
@@ -190,6 +210,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	SAFE_FREE(copyright);
 	SAFE_FREE(date);
 	SAFE_FREE(description);
+	SAFE_FREE(comment);
 	SAFE_FREE(artwork);
 	SAFE_FREE(artwork_mime);
 	SAFE_FREE(track_num);
@@ -202,6 +223,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	SAFE_FREE(unsynclyrics);
 	SAFE_FREE(synclyrics_num);
 	SAFE_FREE(rec_date);
+	SAFE_FREE(rotate);
 
 	return true;
 
@@ -213,6 +235,9 @@ int main(int argc, char *argv[])
 	metadata_extractor_h metadata;
 	int idx = 0;
 	int cnt = argc -1;
+	bool file_test = true;
+//	bool file_test = false;
+
 	printf("--- metadata extractor test start ---\n\n");
 
 	if(cnt < 1)
@@ -230,18 +255,31 @@ int main(int argc, char *argv[])
 
 	for(idx = 0; idx < cnt; idx++)
 	{
-		printf("--------------------------------------------\n");
 		if (!_is_file_exist (argv[idx+1]))
 		{
 			printf("there is no file [%s]\n", argv[idx+1]);
 			goto exception;
 		}
 
-		ret = metadata_extractor_set_path(metadata, argv[idx+1]);
-		if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+		if(file_test)
 		{
-			LOGE("Fail metadata_extractor_set_path [%d]\n", ret);
-			goto exception;
+			printf("Extract meta from file-----------------------\n");
+			ret = metadata_extractor_set_path(metadata, argv[idx+1]);
+			if(ret != METADATA_EXTRACTOR_ERROR_NONE)
+			{
+				LOGE("Fail metadata_extractor_set_path [%d]\n", ret);
+				goto exception;
+			}
+		}
+		else
+		{
+			printf("Extract meta from memory-----------------------\n");
+			int file_size = 0;
+			unsigned char * buffer = NULL;
+			/* Read file */
+			READ_FROM_FILE(argv[idx+1], buffer, file_size);
+
+			ret = metadata_extractor_set_buffer(metadata, buffer, file_size);
 		}
 
 		__capi_metadata_extractor(metadata);

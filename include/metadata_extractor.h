@@ -66,6 +66,21 @@ int metadata_extractor_create(metadata_extractor_h *metadata);
  */
 int metadata_extractor_set_path(metadata_extractor_h metadata, const char *path);
 
+/**
+ * @brief Set buffer to extract
+ *
+ * @param [in] metadata The handle to metadata
+ * @param [in] buffer buffer to extract metadata
+ * @param [in] size buffer size
+ * @return 0 on success, otherwise a negative error value
+ * @retval #METADATA_EXTRACTOR_ERROR_NONE Successful
+ * @retval #METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #METADATA_EXTRACTOR_ERROR_OPERATION_FAILED Internal Operation Fail
+ * @pre Create metadata handle by calling metadata_extractor_create()
+ * @see metadata_extractor_create(), metadata_extractor_destroy()
+ */
+
+int metadata_extractor_set_buffer(metadata_extractor_h metadata, const void *buffer, int size);
 
 /**
  * @brief Destroy metadata

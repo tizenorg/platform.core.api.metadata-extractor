@@ -30,6 +30,8 @@ extern "C" {
 typedef struct
 {
 	char *path;
+	char *buffer;
+	int buffer_size;
 	bool extract_meta;
 
 	int audio_track_cnt;

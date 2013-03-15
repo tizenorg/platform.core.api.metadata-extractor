@@ -72,6 +72,7 @@ typedef enum
 	METADATA_COPYRIGHT,				/**< Copyright*/
 	METADATA_DATE,					/**< Date*/
 	METADATA_DESCRIPTION,				/**< Description*/
+	METADATA_COMMENT,				/**< Comment*/
 	METADATA_TRACK_NUM,				/**< Track number info*/
 	METADATA_CLASSIFICATION,			/**< Classification*/
 	METADATA_RATING,					/**< Rating*/
@@ -82,6 +83,7 @@ typedef enum
 	METADATA_UNSYNCLYRICS,			/**< Unsyncronized lyric*/
 	METADATA_SYNCLYRICS_NUM,		/**< Syncronized lyric (time/lyric set) number*/
 	METADATA_RECDATE,				/**< Recording date*/
+	METADATA_ROTATE,					/**< Rotate(Orientation) Information*/
 } metadata_extractor_attr_e;
 
 

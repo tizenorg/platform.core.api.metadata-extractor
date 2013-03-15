@@ -1,7 +1,7 @@
 Name:       capi-media-metadata-extractor
 Summary:    A media metadata extractor library in SLP C API
 Version: 0.1.0
-Release:    15
+Release:    18
 Group:      System/Libraries
 License:    Apache License, Version 2.0
 Source0:    %{name}-%{version}.tar.gz
