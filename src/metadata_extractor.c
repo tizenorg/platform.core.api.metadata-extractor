@@ -1608,7 +1608,7 @@ int metadata_extractor_get_frame_at_time(metadata_extractor_h metadata, unsigned
 
 	LOGI("enter \n");
 
-	if((!_metadata) ||((!_metadata->path) && (!_metadata->buffer)) ||(!size) || (timestamp < 0))
+	if((!_metadata) ||((!_metadata->path) && (!_metadata->buffer)) ||(!size))
 	{
 		LOGE("INVALID_PARAMETER(0x%08x)", METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;

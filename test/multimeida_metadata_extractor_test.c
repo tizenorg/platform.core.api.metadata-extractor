@@ -271,6 +271,7 @@ int main(int argc, char *argv[])
 				goto exception;
 			}
 		}
+#if 0 // Comment out because of prevent defect
 		else
 		{
 			printf("Extract meta from memory-----------------------\n");
@@ -281,6 +282,7 @@ int main(int argc, char *argv[])
 
 			ret = metadata_extractor_set_buffer(metadata, buffer, file_size);
 		}
+#endif
 
 		__capi_metadata_extractor(metadata);
 		printf("--------------------------------------------\n");
