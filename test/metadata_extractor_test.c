@@ -19,34 +19,33 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include <dlog.h>
 #include <metadata_extractor.h>
 
-#define SAFE_FREE(src)      { if(src) {free(src); src = NULL;}}
+#define SAFE_FREE(src) { if(src) {free(src); src = NULL;}}
 
 #define READ_FROM_FILE(FILE_PATH, data, size) \
-do{	\
-	FILE * fp = fopen (FILE_PATH, "r");	\
-	if (fp) {	\
-			fseek (fp, 0, SEEK_END);	\
+	do {	\
+		FILE *fp = fopen(FILE_PATH, "r");	\
+		if (fp) {	\
+			fseek(fp, 0, SEEK_END);	\
 			size = ftell(fp);	\
-			fseek (fp, 0, SEEK_SET);	\
-			data = malloc (size);	\
-			fread (data, size, sizeof(char), fp);	\
-			fclose (fp);	\
-			printf("file size = %d\n", size );	\
-	}	\
-}while(0)
+			fseek(fp, 0, SEEK_SET);	\
+			data = malloc(size);	\
+			fread(data, size, sizeof(char), fp);	\
+			fclose(fp);	\
+			printf("file size = %d\n", size);	\
+		}	\
+	} while (0)
 
-static int _is_file_exist (const char *filename);
+static int _is_file_exist(const char *filename);
 static bool __capi_metadata_extractor(metadata_extractor_h metadata);
 
-static int _is_file_exist (const char *filename)
+static int _is_file_exist(const char *filename)
 {
 	int ret = 1;
 	if (filename) {
-		const char *to_access = (strstr(filename,"file://")!=NULL)? filename+7:filename;
-		ret = access (to_access, R_OK );
+		const char *to_access = (strstr(filename, "file://") != NULL) ? filename + 7 : filename;
+		ret = access(to_access, R_OK);
 		if (ret != 0) {
 			printf("file [%s] not found.\n", to_access);
 		}
@@ -75,6 +74,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	char *artist = NULL;
 	char *title = NULL;
 	char *album = NULL;
+	char *album_artist = NULL;
 	char *genre = NULL;
 	char *author = NULL;
 	char *copyright = NULL;
@@ -92,21 +92,27 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	char *altitude = 0;
 	char *conductor = NULL;
 	char *unsynclyrics = NULL;
-	char *synclyrics_num = 0;
+	char *synclyrics_num = NULL;
 	char *rec_date = NULL;
 	char *rotate = NULL;
 
 	int idx = 0;
 	unsigned long time_info = 0;
 	char *lyrics = NULL;
-
-	if(metadata == NULL)
-	{
+	int video_cnt = 0;
+	if (metadata == NULL) {
 		printf("Invalid handle \n");
 		return false;
 	}
 
 	/*Get metadata*/
+	metadata_extractor_get_metadata(metadata, METADATA_HAS_AUDIO, &audio_track_cnt);
+	printf("audio_track_cnt = [%s]\n", audio_track_cnt);
+	metadata_extractor_get_metadata(metadata, METADATA_HAS_VIDEO, &video_track_cnt);
+	printf("video_track_cnt = [%s]\n", video_track_cnt);
+	if (video_track_cnt != NULL)
+		video_cnt = atoi(video_track_cnt);
+
 	metadata_extractor_get_metadata(metadata, METADATA_DURATION, &duration);
 	printf("duration = [%s]\n", duration);
 	metadata_extractor_get_metadata(metadata, METADATA_AUDIO_BITRATE, &audio_bitrate);
@@ -115,18 +121,17 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("audio_channel = [%s]\n", audio_channel);
 	metadata_extractor_get_metadata(metadata, METADATA_AUDIO_SAMPLERATE, &audio_samplerate);
 	printf("audio_samplerate = [%s]Hz\n", audio_samplerate);
-	metadata_extractor_get_metadata(metadata, METADATA_HAS_AUDIO, &audio_track_cnt);
-	printf("audio_track_cnt = [%s]\n", audio_track_cnt);
-	metadata_extractor_get_metadata(metadata, METADATA_VIDEO_BITRATE, &video_bitrate);
-	printf("video_bitrate = [%s]bps\n", video_bitrate);
-	metadata_extractor_get_metadata(metadata, METADATA_VIDEO_FPS, &video_fps);
-	printf("video_fps = [%s]\n", video_fps);
-	metadata_extractor_get_metadata(metadata, METADATA_VIDEO_WIDTH, &video_width);
-	printf("video_width = [%s]\n", video_width);
-	metadata_extractor_get_metadata(metadata, METADATA_VIDEO_HEIGHT, &video_height);
-	printf("video_height = [%s]\n", video_height);
-	metadata_extractor_get_metadata(metadata, METADATA_HAS_VIDEO, &video_track_cnt);
-	printf("video_track_cnt = [%s]\n", video_track_cnt);
+
+	if (video_cnt > 0) {
+		metadata_extractor_get_metadata(metadata, METADATA_VIDEO_BITRATE, &video_bitrate);
+		printf("video_bitrate = [%s]bps\n", video_bitrate);
+		metadata_extractor_get_metadata(metadata, METADATA_VIDEO_FPS, &video_fps);
+		printf("video_fps = [%s]\n", video_fps);
+		metadata_extractor_get_metadata(metadata, METADATA_VIDEO_WIDTH, &video_width);
+		printf("video_width = [%s]\n", video_width);
+		metadata_extractor_get_metadata(metadata, METADATA_VIDEO_HEIGHT, &video_height);
+		printf("video_height = [%s]\n", video_height);
+	}
 
 	metadata_extractor_get_metadata(metadata, METADATA_ARTIST, &artist);
 	printf("artist = [%s]\n", artist);
@@ -134,6 +139,8 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("title = [%s]\n", title);
 	metadata_extractor_get_metadata(metadata, METADATA_ALBUM, &album);
 	printf("album = [%s]\n", album);
+	metadata_extractor_get_metadata(metadata, METADATA_ALBUM_ARTIST, &album_artist);
+	printf("album_artist = [%s]\n", album_artist);
 	metadata_extractor_get_metadata(metadata, METADATA_GENRE, &genre);
 	printf("genre = [%s]\n", genre);
 	metadata_extractor_get_metadata(metadata, METADATA_AUTHOR, &author);
@@ -168,12 +175,16 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("rotate = [%s]\n", rotate);
 
 	metadata_extractor_get_metadata(metadata, METADATA_SYNCLYRICS_NUM, &synclyrics_num);
-	int s_num = atoi(synclyrics_num);
-	for(idx = 0; idx < s_num; idx++)
-	{
-		metadata_extractor_get_synclyrics(metadata, idx, &time_info, &lyrics);
-		printf("[%2d][%6ld][%s]\n", idx, time_info, lyrics);
-		SAFE_FREE(lyrics);
+	if (synclyrics_num) {
+		int s_num = atoi(synclyrics_num);
+		for (idx = 0; idx < s_num; idx++) {
+			int ret = -1;
+			ret = metadata_extractor_get_synclyrics(metadata, idx, &time_info, &lyrics);
+			if (ret == 0)
+				printf("[%2d][%6ld][%s]\n", idx, time_info, lyrics);
+
+			SAFE_FREE(lyrics);
+		}
 	}
 
 	/*Get Artwork*/
@@ -181,30 +192,33 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("artwork = [%p], artwork_size = [%d]\n", artwork, artwork_size);
 	printf("artwork_mime = [%s]\n", artwork_mime);
 
-	/*Get Thumbnail*/
-	metadata_extractor_get_frame(metadata, &video_thumbnail, &video_thumbnail_len);
-	printf("video_thumbnail[%p], video_thumbnail_len = [%d]\n\n", video_thumbnail, video_thumbnail_len);
+	if (video_cnt > 0) {
+		/*Get Thumbnail*/
+		metadata_extractor_get_frame(metadata, &video_thumbnail, &video_thumbnail_len);
+		printf("video_thumbnail[%p], video_thumbnail_len = [%d]\n\n", video_thumbnail, video_thumbnail_len);
 
-	/*Get Video frame at time, extract frame of 22.5 sec and not key frame*/
-	metadata_extractor_get_frame_at_time(metadata, 22500, false, &video_frame, &video_frame_len);
-	printf("video_frame[%p], video_frame_len = [%d]\n\n", video_frame, video_frame_len);
+		/*Get Video frame at time, extract frame of 22.5 sec and not key frame*/
+		metadata_extractor_get_frame_at_time(metadata, 22500, false, &video_frame, &video_frame_len);
+		printf("video_frame[%p], video_frame_len = [%d]\n\n", video_frame, video_frame_len);
+	}
 
-	SAFE_FREE(duration );
-	SAFE_FREE(audio_bitrate );
-	SAFE_FREE(audio_channel );
-	SAFE_FREE(audio_samplerate );
-	SAFE_FREE(audio_track_cnt );
-	SAFE_FREE(video_bitrate );
-	SAFE_FREE(video_fps );
-	SAFE_FREE(video_width );
-	SAFE_FREE(video_height );
-	SAFE_FREE(video_track_cnt );
+	SAFE_FREE(audio_track_cnt);
+	SAFE_FREE(video_track_cnt);
+	SAFE_FREE(duration);
+	SAFE_FREE(audio_bitrate);
+	SAFE_FREE(audio_channel);
+	SAFE_FREE(audio_samplerate);
+	SAFE_FREE(video_bitrate);
+	SAFE_FREE(video_fps);
+	SAFE_FREE(video_width);
+	SAFE_FREE(video_height);
 	SAFE_FREE(video_thumbnail);
 	SAFE_FREE(video_frame);
 
 	SAFE_FREE(artist);
 	SAFE_FREE(title);
 	SAFE_FREE(album);
+	SAFE_FREE(album_artist);
 	SAFE_FREE(genre);
 	SAFE_FREE(author);
 	SAFE_FREE(copyright);
@@ -234,53 +248,50 @@ int main(int argc, char *argv[])
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	metadata_extractor_h metadata;
 	int idx = 0;
-	int cnt = argc -1;
+	int cnt = argc - 1;
 	bool file_test = true;
-//	bool file_test = false;
+	/* bool file_test = false; */
 
 	printf("--- metadata extractor test start ---\n\n");
 
-	if(cnt < 1)
-	{
+	if (cnt < 1) {
 		printf("type file path plz. [%d]\n", cnt);
 		return 0;
 	}
 
 	ret = metadata_extractor_create(&metadata);
-	if(ret != METADATA_EXTRACTOR_ERROR_NONE)
-	{
-		LOGE("Fail metadata_extractor_create [%d]\n", ret);
+	if (ret != METADATA_EXTRACTOR_ERROR_NONE) {
+		printf("Fail metadata_extractor_create [%d]\n", ret);
 		return 0;
 	}
 
-	for(idx = 0; idx < cnt; idx++)
-	{
-		if (!_is_file_exist (argv[idx+1]))
-		{
-			printf("there is no file [%s]\n", argv[idx+1]);
+	for (idx = 0; idx < cnt; idx++) {
+		if (!_is_file_exist(argv[idx + 1])) {
+			printf("there is no file [%s]\n", argv[idx + 1]);
 			goto exception;
 		}
 
-		if(file_test)
-		{
+		if (file_test) {
 			printf("Extract meta from file-----------------------\n");
-			ret = metadata_extractor_set_path(metadata, argv[idx+1]);
-			if(ret != METADATA_EXTRACTOR_ERROR_NONE)
-			{
-				LOGE("Fail metadata_extractor_set_path [%d]\n", ret);
+			ret = metadata_extractor_set_path(metadata, argv[idx + 1]);
+			if (ret != METADATA_EXTRACTOR_ERROR_NONE) {
+				printf("Fail metadata_extractor_set_path [%d]\n", ret);
 				goto exception;
 			}
 		}
-#if 0 // Comment out because of prevent defect
-		else
-		{
+#if 0 /* Comment out because of prevent defect */
+		else {
 			printf("Extract meta from memory-----------------------\n");
 			int file_size = 0;
-			unsigned char * buffer = NULL;
+			unsigned char *buffer = NULL;
 			/* Read file */
-			READ_FROM_FILE(argv[idx+1], buffer, file_size);
+			READ_FROM_FILE(argv[idx + 1], buffer, file_size);
 
 			ret = metadata_extractor_set_buffer(metadata, buffer, file_size);
+			if (ret != METADATA_EXTRACTOR_ERROR_NONE) {
+				printf("Fail metadata_extractor_set_buffer [%d]\n", ret);
+				goto exception;
+			}
 		}
 #endif
 
