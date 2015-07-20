@@ -20,17 +20,44 @@
 
 #include <stdbool.h>
 #include <mm_types.h>
-
+#include <dlog.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
+#ifdef LOG_TAG
+#undef LOG_TAG
+#endif
+#define LOG_TAG "CAPI_MEDIA_METADATA_EXTRACTOR"
 
-typedef struct
-{
+#define metadata_extractor_debug(fmt, arg...) do { \
+		LOGD(""fmt"", ##arg);     \
+	} while (0)
+
+#define metadata_extractor_info(fmt, arg...) do { \
+		LOGI(""fmt"", ##arg);     \
+	} while (0)
+
+#define metadata_extractor_error(fmt, arg...) do { \
+		LOGE(""fmt"", ##arg);     \
+	} while (0)
+
+#define metadata_extractor_debug_fenter() do { \
+		LOGD("<Enter>");     \
+	} while (0)
+
+#define metadata_extractor_debug_fleave() do { \
+		LOGD("<Leave>");     \
+	} while (0)
+
+#define metadata_extractor_sucure_info(fmt, arg...) do { \
+		SECURE_LOGI(""fmt"", ##arg);     \
+	} while (0)
+
+typedef struct {
 	char *path;
-	char *buffer;
+	void *buffer;
 	int buffer_size;
 	bool extract_meta;
 
@@ -39,8 +66,7 @@ typedef struct
 
 	MMHandleType attr_h;
 	MMHandleType tag_h;
-}metadata_extractor_s;
-
+} metadata_extractor_s;
 
 #ifdef __cplusplus
 }

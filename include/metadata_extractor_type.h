@@ -14,8 +14,6 @@
 * limitations under the License.
 */
 
-
-
 #ifndef __TIZEN_MEDIA_METADATA_EXTRACTOR_TYPE_H__
 #define __TIZEN_MEDIA_METADATA_EXTRACTOR_TYPE_H__
 
@@ -25,73 +23,78 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/**
+ * @file metadata_extractor_type.h
+ */
 
 /**
 * @addtogroup CAPI_METADATA_EXTRACTOR_MODULE
 * @{
 */
 
-/** Content Error Class */
-#define METADATA_EXTRACTOR_ERROR_CLASS				TIZEN_ERROR_MULTIMEDIA_CLASS | 0x80
+/** @brief Definition for Content Error Class */
+#define METADATA_EXTRACTOR_ERROR_CLASS				TIZEN_ERROR_METADATA_EXTRACTOR
 
 /**
  * @ingroup CAPI_METADATA_EXTRACTOR_MODULE
- * @brief The enumerations of metadata extractor error
+ * @brief Enumeration for metadata extractor error.
  */
 typedef enum
 {
-    METADATA_EXTRACTOR_ERROR_NONE					= TIZEN_ERROR_NONE,				/**< Successful */
-    METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER	= TIZEN_ERROR_INVALID_PARAMETER,	/**< Invalid parameter */
-    METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY 		= TIZEN_ERROR_OUT_OF_MEMORY,		/**< Out of memory */
-    METADATA_EXTRACTOR_ERROR_FILE_EXISTS				= TIZEN_ERROR_FILE_EXISTS,			/**< File not exist */
-    METADATA_EXTRACTOR_ERROR_OPERATION_FAILED		= METADATA_EXTRACTOR_ERROR_CLASS |0x01,	/**< Invalid internal operation */
-} metadata_extractor_error_e;
+	METADATA_EXTRACTOR_ERROR_NONE = TIZEN_ERROR_NONE,         /**< Successful */
+	METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER    = TIZEN_ERROR_INVALID_PARAMETER,         /**< Invalid parameter */
+	METADATA_EXTRACTOR_ERROR_OUT_OF_MEMORY = TIZEN_ERROR_OUT_OF_MEMORY,         /**< Out of memory */
+	METADATA_EXTRACTOR_ERROR_FILE_EXISTS = TIZEN_ERROR_FILE_EXISTS,         /**< File does not exist */
+	METADATA_EXTRACTOR_ERROR_PERMISSION_DENIED		= TIZEN_ERROR_PERMISSION_DENIED,			/**< Permission denied */
+	METADATA_EXTRACTOR_ERROR_OPERATION_FAILED = METADATA_EXTRACTOR_ERROR_CLASS | 0x01,        /**< Invalid internal operation */
+}
+    metadata_extractor_error_e;
 
 
 /**
  * @ingroup CAPI_METADATA_EXTRACTOR_MODULE
- * @brief The enumerations of attribute
+ * @brief Enumeration for attribute.
  */
-typedef enum
-{
+typedef enum {
 	METADATA_DURATION	= 0,			/**< Duration */
 	METADATA_VIDEO_BITRATE,			/**< Video Bitrate */
 	METADATA_VIDEO_FPS,				/**< Video FPS */
-	METADATA_VIDEO_WIDTH,			/**< Video Width*/
-	METADATA_VIDEO_HEIGHT,			/**< Video Height*/
+	METADATA_VIDEO_WIDTH,			/**< Video Width */
+	METADATA_VIDEO_HEIGHT,			/**< Video Height */
 	METADATA_HAS_VIDEO,				/**< Video stream count */
-	METADATA_AUDIO_BITRATE,			/**< Audio Bitrate*/
-	METADATA_AUDIO_CHANNELS,		/**< Audio Channels*/
-	METADATA_AUDIO_SAMPLERATE,		/**< Audio Samplerate*/
+	METADATA_AUDIO_BITRATE,			/**< Audio Bitrate */
+	METADATA_AUDIO_CHANNELS,		/**< Audio Channels */
+	METADATA_AUDIO_SAMPLERATE,		/**< Audio Samplerate */
+	METADATA_AUDIO_BITPERSAMPLE,		/**< Audio bit per sample */
 	METADATA_HAS_AUDIO,				/**< Audio stream count */
-	METADATA_ARTIST,					/**< Artist*/
-	METADATA_TITLE,					/**< Title*/
-	METADATA_ALBUM,					/**< Album*/
-	METADATA_GENRE,					/**< Genre*/
-	METADATA_AUTHOR,					/**< Author*/
-	METADATA_COPYRIGHT,				/**< Copyright*/
-	METADATA_DATE,					/**< Date*/
-	METADATA_DESCRIPTION,				/**< Description*/
-	METADATA_COMMENT,				/**< Comment*/
-	METADATA_TRACK_NUM,				/**< Track number info*/
-	METADATA_CLASSIFICATION,			/**< Classification*/
-	METADATA_RATING,					/**< Rating*/
-	METADATA_LONGITUDE,				/**< Longitude*/
-	METADATA_LATITUDE,				/**< Latitude*/
-	METADATA_ALTITUDE,				/**< Altitude*/
-	METADATA_CONDUCTOR,				/**< Conductor*/
-	METADATA_UNSYNCLYRICS,			/**< Unsyncronized lyric*/
-	METADATA_SYNCLYRICS_NUM,		/**< Syncronized lyric (time/lyric set) number*/
-	METADATA_RECDATE,				/**< Recording date*/
-	METADATA_ROTATE,					/**< Rotate(Orientation) Information*/
+	METADATA_ARTIST,					/**< Artist */
+	METADATA_TITLE,					/**< Title */
+	METADATA_ALBUM,					/**< Album */
+	METADATA_ALBUM_ARTIST,			/**< Album_Artist */
+	METADATA_GENRE,					/**< Genre */
+	METADATA_AUTHOR,					/**< Author */
+	METADATA_COPYRIGHT,				/**< Copyright */
+	METADATA_DATE,					/**< Date */
+	METADATA_DESCRIPTION,				/**< Description */
+	METADATA_COMMENT,				/**< Comment */
+	METADATA_TRACK_NUM,				/**< Track number info */
+	METADATA_CLASSIFICATION,			/**< Classification */
+	METADATA_RATING,					/**< Rating */
+	METADATA_LONGITUDE,				/**< Longitude */
+	METADATA_LATITUDE,				/**< Latitude */
+	METADATA_ALTITUDE,				/**< Altitude */
+	METADATA_CONDUCTOR,				/**< Conductor */
+	METADATA_UNSYNCLYRICS,			/**< Unsynchronized lyric */
+	METADATA_SYNCLYRICS_NUM,		/**< Synchronized lyric (time/lyric set) number */
+	METADATA_RECDATE,				/**< Recording date */
+	METADATA_ROTATE,					/**< Rotate(Orientation) Information */
 } metadata_extractor_attr_e;
-
 
 /**
  * @ingroup CAPI_METADATA_EXTRACTOR_MODULE
- * @brief The handle of metadata extractor
+ * @brief The metadata extractor handle.
  */
-typedef struct metadata_extractor_s* metadata_extractor_h;
+typedef struct metadata_extractor_s *metadata_extractor_h;
 
 /**
  * @}
@@ -100,6 +103,5 @@ typedef struct metadata_extractor_s* metadata_extractor_h;
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
 
 #endif /*__TIZEN_MEDIA_METADATA_EXTRACTOR_TYPE_H__*/
