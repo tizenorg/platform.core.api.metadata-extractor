@@ -18,7 +18,7 @@ SET(Services
 SET(project_prefix "capi")
 SET(prefix "/usr")
 SET(version "0.0.1")
-SET(maintainer "Seungkeun Lee <sngn.lee@samsung.com>, Kangho Hur<kagho.hur@samsung.com>")
+SET(maintainer "Haejeong Kim <backto.kim@samsung.com>")
 SET(description "A Metadata Extractor library in Tizen Native API")
 SET(service "media")
 SET(submodule "metadata-extractor")
@@ -43,7 +43,7 @@ FOREACH(flag ${${fw_name}_CFLAGS})
     SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
 ENDFOREACH(flag)
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -fPIC -Wall")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -fPIC -Wall -Werror")
 SET(CMAKE_C_FLAGS_DEBUG "-O0 -g")
 
 IF("${ARCH}" MATCHES "^arm.*")
@@ -51,7 +51,7 @@ IF("${ARCH}" MATCHES "^arm.*")
 ENDIF("${ARCH}" MATCHES "^arm.*")
 
 ADD_DEFINITIONS("-DPREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
-ADD_DEFINITIONS("-DTIZEN_DEBUG")
+ADD_DEFINITIONS("-D_FILE_OFFSET_BITS=64")
 
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=${LIB_INSTALL_DIR}")
 
