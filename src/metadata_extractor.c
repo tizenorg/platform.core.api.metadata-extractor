@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <mm_file.h>
-#include <mm_error.h>
+#include <mm_file_error.h>
 #include <metadata_extractor.h>
 #include <metadata_extractor_private.h>
 
@@ -142,8 +142,8 @@ static int __metadata_extractor_get_stream_info(metadata_extractor_s *metadata, 
 
 	ret = mm_file_get_stream_info(path, &_audio_track_cnt, &_video_track_cnt);
 
-	if (ret != MM_ERROR_NONE) {
-		if (ret == MM_ERROR_FILE_NOT_FOUND) {
+	if (ret != FILEINFO_ERROR_NONE) {
+		if (ret == FILEINFO_ERROR_FILE_NOT_FOUND) {
 			metadata_extractor_error("FILE_NOT_EXISTS(0x%08x)", METADATA_EXTRACTOR_ERROR_FILE_EXISTS);
 			return METADATA_EXTRACTOR_ERROR_FILE_EXISTS;
 		} else {
@@ -169,8 +169,8 @@ static int __metadata_extractor_create_content_attrs(metadata_extractor_s *metad
 
 	ret = mm_file_create_content_attrs(&content, path);
 
-	if (ret != MM_ERROR_NONE) {
-		if (ret == MM_ERROR_FILE_NOT_FOUND) {
+	if (ret != FILEINFO_ERROR_NONE) {
+		if (ret == FILEINFO_ERROR_FILE_NOT_FOUND) {
 			metadata_extractor_error("FILE_NOT_EXISTS(0x%08x)", METADATA_EXTRACTOR_ERROR_FILE_EXISTS);
 			return METADATA_EXTRACTOR_ERROR_FILE_EXISTS;
 		} else {
@@ -184,7 +184,7 @@ static int __metadata_extractor_create_content_attrs(metadata_extractor_s *metad
 	                        MM_FILE_CONTENT_AUDIO_TRACK_COUNT, &_audio_track_cnt,
 	                        NULL);
 
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		mm_file_destroy_content_attrs(content);
@@ -207,8 +207,8 @@ static int __metadata_extractor_create_tag_attr(metadata_extractor_s *metadata, 
 
 	ret = mm_file_create_tag_attrs(&tag, path);
 
-	if (ret != MM_ERROR_NONE) {
-		if (ret == MM_ERROR_FILE_NOT_FOUND) {
+	if (ret != FILEINFO_ERROR_NONE) {
+		if (ret == FILEINFO_ERROR_FILE_NOT_FOUND) {
 			metadata_extractor_error("FILE_NOT_EXISTS(0x%08x)", METADATA_EXTRACTOR_ERROR_FILE_EXISTS);
 			return METADATA_EXTRACTOR_ERROR_FILE_EXISTS;
 		} else {
@@ -234,8 +234,8 @@ static int __metadata_extractor_create_content_attrs_from_buffer(metadata_extrac
 
 	ret = mm_file_create_content_attrs_from_memory(&content, buffer, size, 0);
 
-	if (ret != MM_ERROR_NONE) {
-		if (ret == MM_ERROR_FILE_NOT_FOUND) {
+	if (ret != FILEINFO_ERROR_NONE) {
+		if (ret == FILEINFO_ERROR_FILE_NOT_FOUND) {
 			metadata_extractor_error("FILE_NOT_EXISTS(0x%08x)", METADATA_EXTRACTOR_ERROR_FILE_EXISTS);
 			return METADATA_EXTRACTOR_ERROR_FILE_EXISTS;
 		} else {
@@ -249,7 +249,7 @@ static int __metadata_extractor_create_content_attrs_from_buffer(metadata_extrac
 	                        MM_FILE_CONTENT_AUDIO_TRACK_COUNT, &_audio_track_cnt,
 	                        NULL);
 
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		mm_file_destroy_content_attrs(content);
@@ -271,8 +271,8 @@ static int __metadata_extractor_create_tag_attrs_from_buffer(metadata_extractor_
 
 	ret = mm_file_create_tag_attrs_from_memory(&tag, buffer, size, 0);
 
-	if (ret != MM_ERROR_NONE) {
-		if (ret == MM_ERROR_FILE_NOT_FOUND) {
+	if (ret != FILEINFO_ERROR_NONE) {
+		if (ret == FILEINFO_ERROR_FILE_NOT_FOUND) {
 			metadata_extractor_error("FILE_NOT_EXISTS(0x%08x)", METADATA_EXTRACTOR_ERROR_FILE_EXISTS);
 			return METADATA_EXTRACTOR_ERROR_FILE_EXISTS;
 		} else {
@@ -299,7 +299,7 @@ static int __metadata_extractor_get_duration(metadata_extractor_s *metadata, int
 	}
 
 	ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_DURATION, &_duration, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -323,7 +323,7 @@ static int __metadata_extractor_get_audio_bitrate(metadata_extractor_s *metadata
 
 	if (metadata->audio_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_AUDIO_BITRATE, &_audio_bitrate, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -348,7 +348,7 @@ static int __metadata_extractor_get_audio_channel(metadata_extractor_s *metadata
 
 	if (metadata->audio_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_AUDIO_CHANNELS, &_audio_channel, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -373,7 +373,7 @@ static int __metadata_extractor_get_audio_samplerate(metadata_extractor_s *metad
 
 	if (metadata->audio_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_AUDIO_SAMPLERATE, &_audio_samplerate, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -398,7 +398,7 @@ static int __metadata_extractor_get_audio_bitpersample(metadata_extractor_s *met
 
 	if (metadata->audio_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_AUDIO_BITPERSAMPLE, &_audio_bit_per_sample, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -437,7 +437,7 @@ static int __metadata_extractor_get_video_bitrate(metadata_extractor_s *metadata
 
 	if (metadata->video_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_VIDEO_BITRATE, &_video_bitrate, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -461,7 +461,7 @@ static int __metadata_extractor_get_video_FPS(metadata_extractor_s *metadata, in
 
 	if (metadata->video_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_VIDEO_FPS, &_video_fps, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -486,7 +486,7 @@ static int __metadata_extractor_get_video_width(metadata_extractor_s *metadata, 
 
 	if (metadata->video_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_VIDEO_WIDTH, &_video_width, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -511,7 +511,7 @@ static int __metadata_extractor_get_video_height(metadata_extractor_s *metadata,
 
 	if (metadata->video_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_VIDEO_HEIGHT, &_video_height, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -537,7 +537,7 @@ static int __metadata_extractor_get_video_thumbnail(metadata_extractor_s *metada
 
 	if (metadata->video_track_cnt > 0) {
 		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_VIDEO_THUMBNAIL, &_video_thumbnail, &_video_thumbnail_len, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -572,7 +572,7 @@ static int __metadata_extractor_get_artist(metadata_extractor_s *metadata, char 
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ARTIST, &_artist, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -591,7 +591,7 @@ static int __metadata_extractor_get_title(metadata_extractor_s *metadata, char *
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_TITLE, &_title, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -610,7 +610,7 @@ static int __metadata_extractor_get_album(metadata_extractor_s *metadata, char *
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ALBUM, &_album, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -629,7 +629,7 @@ static int __metadata_extractor_get_album_artist(metadata_extractor_s *metadata,
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name, MM_FILE_TAG_ALBUM_ARTIST, &_album_artist, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -648,7 +648,7 @@ static int __metadata_extractor_get_genre(metadata_extractor_s *metadata, char *
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_GENRE, &_genre, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -667,7 +667,7 @@ static int __metadata_extractor_get_author(metadata_extractor_s *metadata, char 
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_AUTHOR, &_author, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -686,7 +686,7 @@ static int __metadata_extractor_get_copyright(metadata_extractor_s *metadata, ch
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_COPYRIGHT, &_copyright, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -705,7 +705,7 @@ static int __metadata_extractor_get_date(metadata_extractor_s *metadata, char **
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_DATE, &_date, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -724,7 +724,7 @@ static int __metadata_extractor_get_description(metadata_extractor_s *metadata, 
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_DESCRIPTION, &_description, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -743,7 +743,7 @@ static int __metadata_extractor_get_comment(metadata_extractor_s *metadata, char
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name, MM_FILE_TAG_COMMENT, &_comment, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -763,7 +763,7 @@ static int __metadata_extractor_get_artwork(metadata_extractor_s *metadata, void
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name, MM_FILE_TAG_ARTWORK_SIZE, &_artwork_size, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -771,7 +771,7 @@ static int __metadata_extractor_get_artwork(metadata_extractor_s *metadata, void
 
 	if (_artwork_size > 0) {
 		ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ARTWORK, &_artwork, &_tag_len, NULL);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			SAFE_FREE(err_attr_name);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -792,7 +792,7 @@ static int __metadata_extractor_get_artwork_mime(metadata_extractor_s *metadata,
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ARTWORK_MIME, &_artwork_mime, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -812,7 +812,7 @@ static int __metadata_extractor_get_track_num(metadata_extractor_s *metadata, ch
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_TRACK_NUM, &_track_num, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -831,7 +831,7 @@ static int __metadata_extractor_get_classification(metadata_extractor_s *metadat
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_CLASSIFICATION, &_classification, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -850,7 +850,7 @@ static int __metadata_extractor_get_rating(metadata_extractor_s *metadata, char 
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_RATING, &_rating, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -868,7 +868,7 @@ static int __metadata_extractor_get_longitude(metadata_extractor_s *metadata, do
 	double _longitude = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_LONGITUDE, &_longitude, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -886,7 +886,7 @@ static int __metadata_extractor_get_latitude(metadata_extractor_s *metadata, dou
 	double _latitude = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_LATIDUE, &_latitude, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -904,7 +904,7 @@ static int __metadata_extractor_get_altitude(metadata_extractor_s *metadata, dou
 	double _altitude = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ALTIDUE, &_altitude, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -923,7 +923,7 @@ static int __metadata_extractor_get_conductor(metadata_extractor_s *metadata, ch
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_CONDUCTOR, &_conductor, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -941,7 +941,7 @@ static int __metadata_extractor_get_unsynclyrics(metadata_extractor_s *metadata,
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_UNSYNCLYRICS, &_unsynclyrics, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -960,7 +960,7 @@ static int __metadata_extractor_get_recording_date(metadata_extractor_s *metadat
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_RECDATE, &_rec_date, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -979,7 +979,7 @@ static int __metadata_extractor_get_rotate(metadata_extractor_s *metadata, char 
 	int _tag_len = 0;
 
 	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_ROTATE, &_rotate, &_tag_len, NULL);
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -996,8 +996,8 @@ static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s *me
 	char *err_attr_name = NULL;
 	int _synclyrics_num = 0;
 
-	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name,	MM_FILE_TAG_SYNCLYRICS_NUM, &_synclyrics_num, NULL);
-	if (ret != MM_ERROR_NONE) {
+	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name, MM_FILE_TAG_SYNCLYRICS_NUM, &_synclyrics_num, NULL);
+	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
@@ -1014,7 +1014,7 @@ static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata)
 
 	if (metadata->attr_h) {
 		ret = mm_file_destroy_content_attrs(metadata->attr_h);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
 		}
@@ -1022,7 +1022,7 @@ static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata)
 
 	if (metadata->tag_h) {
 		ret = mm_file_destroy_tag_attrs(metadata->tag_h);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
 		}
@@ -1159,7 +1159,7 @@ int metadata_extractor_get_synclyrics(metadata_extractor_h metadata, int index, 
 
 	if ((_synclyrics_num > 0) && (index < _synclyrics_num)) {
 		ret = mm_file_get_synclyrics_info((MMHandleType)_metadata->tag_h, index, &_time_info, &_lyrics);
-		if (ret != MM_ERROR_NONE) {
+		if (ret != FILEINFO_ERROR_NONE) {
 			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
 		}
@@ -1538,7 +1538,7 @@ int metadata_extractor_get_frame_at_time(metadata_extractor_h metadata, unsigned
 		ret = mm_file_get_video_frame_from_memory(_metadata->buffer, _metadata->buffer_size, micro_timestamp, is_accurate, (unsigned char **)&_frame, &_frame_size, &width, &height);
 	}
 
-	if (ret != MM_ERROR_NONE) {
+	if (ret != FILEINFO_ERROR_NONE) {
 		SAFE_FREE(_frame);
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
