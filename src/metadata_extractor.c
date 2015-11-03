@@ -135,7 +135,7 @@ static int __metadata_extractor_check_and_extract_meta(metadata_extractor_s *met
 
 static int __metadata_extractor_get_stream_info(metadata_extractor_s *metadata, const char *path)
 {
-	unsigned int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	int _audio_track_cnt = 0;
 	int _video_track_cnt = 0;
 
@@ -159,7 +159,7 @@ static int __metadata_extractor_get_stream_info(metadata_extractor_s *metadata, 
 
 static int __metadata_extractor_create_content_attrs(metadata_extractor_s *metadata, const char *path)
 {
-	unsigned int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	MMHandleType content = 0;
 	char *err_attr_name = NULL;
 
@@ -201,7 +201,7 @@ static int __metadata_extractor_create_content_attrs(metadata_extractor_s *metad
 
 static int __metadata_extractor_create_tag_attr(metadata_extractor_s *metadata, const char *path)
 {
-	unsigned int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	MMHandleType tag = 0;
 
 	ret = mm_file_create_tag_attrs(&tag, path);
@@ -224,7 +224,7 @@ static int __metadata_extractor_create_tag_attr(metadata_extractor_s *metadata, 
 
 static int __metadata_extractor_create_content_attrs_from_buffer(metadata_extractor_s *metadata, const void *buffer, int size)
 {
-	unsigned int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	MMHandleType content = 0;
 	char *err_attr_name = NULL;
 
@@ -265,7 +265,7 @@ static int __metadata_extractor_create_content_attrs_from_buffer(metadata_extrac
 
 static int __metadata_extractor_create_tag_attrs_from_buffer(metadata_extractor_s *metadata, const void *buffer, int size)
 {
-	unsigned int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
 	MMHandleType tag = 0;
 
 	ret = mm_file_create_tag_attrs_from_memory(&tag, buffer, size, 0);
