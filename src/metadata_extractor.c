@@ -21,7 +21,7 @@
 #include <metadata_extractor.h>
 #include <metadata_extractor_private.h>
 
-#define SAFE_FREE(src)      { if(src) {free(src); src = NULL;}}
+#define SAFE_FREE(src)      { if (src) {free(src); src = NULL; } }
 #define META_MAX_LEN	256
 
 typedef enum {
@@ -1377,7 +1377,7 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 			ret = __metadata_extractor_get_rotate(_metadata, &s_value);
 			break;
 		}
-		default :
+		default:
 			break;
 	}
 

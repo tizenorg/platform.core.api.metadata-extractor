@@ -21,7 +21,7 @@
 #include <stdbool.h>
 #include <metadata_extractor.h>
 
-#define SAFE_FREE(src) { if(src) {free(src); src = NULL;}}
+#define SAFE_FREE(src) { if (src) {free(src); src = NULL; } }
 
 #define READ_FROM_FILE(FILE_PATH, data, size) \
 	do {	\
