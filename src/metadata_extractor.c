@@ -179,9 +179,9 @@ static int __metadata_extractor_create_content_attrs(metadata_extractor_s *metad
 	}
 
 	ret = mm_file_get_attrs(content, &err_attr_name,
-	                        MM_FILE_CONTENT_VIDEO_TRACK_COUNT, &_video_track_cnt,
-	                        MM_FILE_CONTENT_AUDIO_TRACK_COUNT, &_audio_track_cnt,
-	                        NULL);
+					MM_FILE_CONTENT_VIDEO_TRACK_COUNT, &_video_track_cnt,
+					MM_FILE_CONTENT_AUDIO_TRACK_COUNT, &_audio_track_cnt,
+					NULL);
 
 	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
@@ -244,9 +244,9 @@ static int __metadata_extractor_create_content_attrs_from_buffer(metadata_extrac
 	}
 
 	ret = mm_file_get_attrs(content, &err_attr_name,
-	                        MM_FILE_CONTENT_VIDEO_TRACK_COUNT, &_video_track_cnt,
-	                        MM_FILE_CONTENT_AUDIO_TRACK_COUNT, &_audio_track_cnt,
-	                        NULL);
+					MM_FILE_CONTENT_VIDEO_TRACK_COUNT, &_video_track_cnt,
+					MM_FILE_CONTENT_AUDIO_TRACK_COUNT, &_audio_track_cnt,
+					NULL);
 
 	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
