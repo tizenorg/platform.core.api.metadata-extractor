@@ -59,6 +59,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	char *audio_bitrate = 0;
 	char *audio_channel = 0;
 	char *audio_samplerate = 0;
+	char *audio_bitpersample = 0;
 	char *audio_track_cnt = 0;
 	char *video_bitrate = 0;
 	char *video_fps = 0;
@@ -121,6 +122,8 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("audio_channel = [%s]\n", audio_channel);
 	metadata_extractor_get_metadata(metadata, METADATA_AUDIO_SAMPLERATE, &audio_samplerate);
 	printf("audio_samplerate = [%s]Hz\n", audio_samplerate);
+	metadata_extractor_get_metadata(metadata, METADATA_AUDIO_BITPERSAMPLE, &audio_bitpersample);
+	printf("audio_bitpersample = [%s]Bit\n", audio_bitpersample);
 
 	if (video_cnt > 0) {
 		metadata_extractor_get_metadata(metadata, METADATA_VIDEO_BITRATE, &video_bitrate);
@@ -208,6 +211,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	SAFE_FREE(audio_bitrate);
 	SAFE_FREE(audio_channel);
 	SAFE_FREE(audio_samplerate);
+	SAFE_FREE(audio_bitpersample);
 	SAFE_FREE(video_bitrate);
 	SAFE_FREE(video_fps);
 	SAFE_FREE(video_width);
