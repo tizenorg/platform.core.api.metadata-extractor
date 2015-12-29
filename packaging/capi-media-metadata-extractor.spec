@@ -1,8 +1,8 @@
 Name:       capi-media-metadata-extractor
-Summary:    A media metadata extractor library in SLP C API
+Summary:    A media metadata extractor library in Tizen Native API
 Version: 0.1.2
 Release:    1
-Group:      System/Libraries
+Group:      Multimedia/API
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
 Source1001: 	capi-media-metadata-extractor.manifest
@@ -11,15 +11,15 @@ BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(mm-fileinfo)
 BuildRequires:  pkgconfig(capi-base-common)
 %description
-A media metadata extractor  library in SLP C API
+The media metadata extracting library in Tizen Native API.
 
 %package devel
-Summary:  A media metadata extractor  library in SLP C API (Development)
+Summary:  A media metadata extractor library in Tizen Native API (Development)
 Group:    Multimedia/Development
 Requires: %{name} = %{version}-%{release}
 
 %description devel
-A media metadata extractor  library in SLP C API
+The media metadata extracting library in Tizen Native API. (Development files included)
 
 %prep
 %setup -q
