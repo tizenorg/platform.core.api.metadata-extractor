@@ -46,9 +46,8 @@ static int _is_file_exist(const char *filename)
 	if (filename) {
 		const char *to_access = (strstr(filename, "file://") != NULL) ? filename + 7 : filename;
 		ret = access(to_access, R_OK);
-		if (ret != 0) {
+		if (ret != 0)
 			printf("file [%s] not found.\n", to_access);
-		}
 	}
 	return !ret;
 }
