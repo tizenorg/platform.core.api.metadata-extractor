@@ -38,6 +38,7 @@ extern "C" {
 /**
  * @ingroup CAPI_METADATA_EXTRACTOR_MODULE
  * @brief Enumeration for metadata extractor error.
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
 	METADATA_EXTRACTOR_ERROR_NONE = TIZEN_ERROR_NONE,         /**< Successful */
@@ -52,6 +53,7 @@ typedef enum {
 /**
  * @ingroup CAPI_METADATA_EXTRACTOR_MODULE
  * @brief Enumeration for attribute.
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
 	METADATA_DURATION	= 0,			/**< Duration */
@@ -86,11 +88,14 @@ typedef enum {
 	METADATA_SYNCLYRICS_NUM,		/**< Synchronized lyric (time/lyric set) number */
 	METADATA_RECDATE,				/**< Recording date */
 	METADATA_ROTATE,					/**< Rotate(Orientation) Information */
+	METADATA_VIDEO_CODEC,			/**< Video Codec (Since 3.0) */
+	METADATA_AUDIO_CODEC,			/**< Audio Codec (Since 3.0) */
 } metadata_extractor_attr_e;
 
 /**
  * @ingroup CAPI_METADATA_EXTRACTOR_MODULE
  * @brief The metadata extractor handle.
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef struct metadata_extractor_s *metadata_extractor_h;
 
