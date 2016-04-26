@@ -86,6 +86,8 @@ typedef enum {
 	METADATA_SYNCLYRICS_NUM,		/**< Synchronized lyric (time/lyric set) number */
 	METADATA_RECDATE,				/**< Recording date */
 	METADATA_ROTATE,					/**< Rotate(Orientation) Information */
+	METADATA_VIDEO_CODEC,			/**< Video Codec */
+	METADATA_AUDIO_CODEC,			/**< Audio Codec */
 } metadata_extractor_attr_e;
 
 /**
