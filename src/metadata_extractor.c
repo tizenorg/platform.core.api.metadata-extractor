@@ -71,6 +71,8 @@ static int __metadata_extractor_get_recording_date(metadata_extractor_s *metadat
 static int __metadata_extractor_get_rotate(metadata_extractor_s *metadata, char **rotate);
 static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s *metadata, int *synclyrics_num);
 static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata);
+static int __metadata_extractor_get_audio_codec(metadata_extractor_s *metadata, char **audio_codec);
+static int __metadata_extractor_get_video_codec(metadata_extractor_s *metadata, char **video_codec);
 
 static int __metadata_extractor_check_and_extract_meta(metadata_extractor_s *metadata, metadata_extractor_type_e metadata_type)
 {
@@ -1002,6 +1004,85 @@ static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s *me
 	return ret;
 }
 
+static int __metadata_extractor_get_audio_codec(metadata_extractor_s *metadata, char **audio_codec)
+{
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	char *err_attr_name = NULL;
+	int audio_codec_idx = 0;
+	int audio_codec_cnt = 45;
+
+	const char *AudioCodecTypeString[] = {
+		"AMR", "G723.1", "MP3", "OGG", "AAC", "WMA", "MMF", "ADPCM", "WAVE", "WAVE NEW", "MIDI", "IMELODY", "MXMF", "MPEG1-Layer1 codec", "MPEG1-Layer2 codec",
+		"G711", "G722", "G722.1",	"G722.2  (AMR-WB)", "G723 wideband speech", "G726 (ADPCM)", "G728 speech",	"G729", "G729a",	"G729.1",
+		"Real",
+		"AAC-Low complexity",	"AAC-Main profile", "AAC-Scalable sample rate", "AAC-Long term prediction", "AAC-High Efficiency v1",	"AAC-High efficiency v2",
+		"DolbyDigital", "Apple Lossless",	"Sony proprietary", "SPEEX",	"Vorbis",	"AIFF", "AU",	"None (will be deprecated)",
+		"PCM",	"ALAW", "MULAW",	"MS ADPCM", "FLAC"
+	};
+
+	if ((!metadata) || (!metadata->attr_h)) {
+		metadata_extractor_error("INVALID_PARAMETER(0x%08x)", METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
+		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	if (metadata->audio_track_cnt > 0) {
+		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_AUDIO_CODEC, &audio_codec_idx, NULL);
+		if (ret != FILEINFO_ERROR_NONE) {
+			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
+			SAFE_FREE(err_attr_name);
+			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
+		}
+	}
+
+	if (audio_codec_idx < audio_codec_cnt)
+		*audio_codec = strdup(AudioCodecTypeString[audio_codec_idx]);
+	else {
+		metadata_extractor_error("Invalid Audio Codec [%d]", audio_codec_idx);
+		*audio_codec = NULL;
+	}
+
+	return ret;
+}
+
+static int __metadata_extractor_get_video_codec(metadata_extractor_s *metadata, char **video_codec)
+{
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	char *err_attr_name = NULL;
+	int video_codec_idx = 0;
+	int video_codec_cnt = 29;
+
+	const char *VideoCodecTypeString[] = {
+		"None (will be deprecated)",
+		"H263", "H264", "H26L", "MPEG4", "MPEG1", "WMV", "DIVX", "XVID", "H261", "H262/MPEG2-part2", "H263v2",	"H263v3",
+		"Motion JPEG", "MPEG2", "MPEG4 part-2 Simple profile",	"MPEG4 part-2 Advanced Simple profile", "MPEG4 part-2 Main profile",
+		"MPEG4 part-2 Core profile", "MPEG4 part-2 Adv Coding Eff profile", "MPEG4 part-2 Adv RealTime Simple profile",
+		"MPEG4 part-10 (h.264)",	"Real", "VC-1", "AVS",	"Cinepak",	"Indeo",	"Theora", "Flv"
+	};
+
+	if ((!metadata) || (!metadata->attr_h)) {
+		metadata_extractor_error("INVALID_PARAMETER(0x%08x)", METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
+		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	if (metadata->video_track_cnt > 0) {
+		ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_CONTENT_VIDEO_CODEC, &video_codec_idx, NULL);
+		if (ret != FILEINFO_ERROR_NONE) {
+			metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
+			SAFE_FREE(err_attr_name);
+			return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
+		}
+	}
+
+	if (video_codec_idx < video_codec_cnt)
+		*video_codec = strdup(VideoCodecTypeString[video_codec_idx]);
+	else {
+		metadata_extractor_error("Invalid Video Codec[%d]", video_codec_idx);
+		*video_codec = NULL;
+	}
+
+	return ret;
+}
+
 static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
@@ -1197,6 +1278,8 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_ATTR);
 	else if ((attribute > METADATA_HAS_AUDIO) && (attribute <= METADATA_ROTATE))
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_TAG);
+	else if((attribute == METADATA_AUDIO_CODEC) || (attribute == METADATA_VIDEO_CODEC))
+		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_ATTR);
 	else {
 		metadata_extractor_error("INVALID_PARAMETER [%d]", attribute);
 		ret = METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
@@ -1211,6 +1294,11 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 	case METADATA_DURATION: {
 		is_string = 0;
 		ret = __metadata_extractor_get_duration(_metadata, &i_value);
+		break;
+	}
+	case METADATA_VIDEO_CODEC: {
+		is_string = 1;
+		ret = __metadata_extractor_get_video_codec(_metadata, &s_value);
 		break;
 	}
 	case METADATA_VIDEO_BITRATE: {
@@ -1236,6 +1324,11 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 	case METADATA_HAS_VIDEO: {
 		is_string = 0;
 		ret = __metadata_extractor_get_video_track_count(_metadata, &i_value);
+		break;
+	}
+	case METADATA_AUDIO_CODEC: {
+		is_string = 1;
+		ret = __metadata_extractor_get_audio_codec(_metadata, &s_value);
 		break;
 	}
 	case METADATA_AUDIO_BITRATE: {
