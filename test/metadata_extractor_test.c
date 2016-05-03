@@ -95,6 +95,8 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	char *synclyrics_num = NULL;
 	char *rec_date = NULL;
 	char *rotate = NULL;
+	char *video_codec = NULL;
+	char *audio_codec = NULL;
 
 	int idx = 0;
 	unsigned long time_info = 0;
@@ -175,6 +177,10 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("rec_date = [%s]\n", rec_date);
 	metadata_extractor_get_metadata(metadata, METADATA_ROTATE, &rotate);
 	printf("rotate = [%s]\n", rotate);
+	metadata_extractor_get_metadata(metadata, METADATA_AUDIO_CODEC, &audio_codec);
+	printf("audio_codec = [%s]\n", audio_codec);
+	metadata_extractor_get_metadata(metadata, METADATA_VIDEO_CODEC, &video_codec);
+	printf("video_codec = [%s]\n", video_codec);
 
 	metadata_extractor_get_metadata(metadata, METADATA_SYNCLYRICS_NUM, &synclyrics_num);
 	if (synclyrics_num) {
@@ -241,6 +247,8 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	SAFE_FREE(synclyrics_num);
 	SAFE_FREE(rec_date);
 	SAFE_FREE(rotate);
+	SAFE_FREE(audio_codec);
+	SAFE_FREE(video_codec);
 
 	return true;
 
