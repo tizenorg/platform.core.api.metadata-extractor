@@ -97,6 +97,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	char *rotate = NULL;
 	char *video_codec = NULL;
 	char *audio_codec = NULL;
+	char *is_360 = NULL;
 
 	int idx = 0;
 	unsigned long time_info = 0;
@@ -181,6 +182,8 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	printf("audio_codec = [%s]\n", audio_codec);
 	metadata_extractor_get_metadata(metadata, METADATA_VIDEO_CODEC, &video_codec);
 	printf("video_codec = [%s]\n", video_codec);
+	metadata_extractor_get_metadata(metadata, METADATA_360, &is_360);
+	printf("is_360 = [%s]\n", is_360);
 
 	metadata_extractor_get_metadata(metadata, METADATA_SYNCLYRICS_NUM, &synclyrics_num);
 	if (synclyrics_num) {

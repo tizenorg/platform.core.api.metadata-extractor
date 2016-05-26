@@ -89,6 +89,7 @@ typedef enum {
 	METADATA_ROTATE,					/**< Rotate(Orientation) Information */
 	METADATA_VIDEO_CODEC,			/**< Video Codec (Since 3.0) */
 	METADATA_AUDIO_CODEC,			/**< Audio Codec (Since 3.0) */
+	METADATA_360,						/**< 360 content Information (Since 3.0) */
 } metadata_extractor_attr_e;
 
 /**

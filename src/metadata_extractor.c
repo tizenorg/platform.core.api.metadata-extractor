@@ -73,6 +73,7 @@ static int __metadata_extractor_get_synclyrics_pair_num(metadata_extractor_s *me
 static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata);
 static int __metadata_extractor_get_audio_codec(metadata_extractor_s *metadata, char **audio_codec);
 static int __metadata_extractor_get_video_codec(metadata_extractor_s *metadata, char **video_codec);
+static int __metadata_extractor_get_is_360(metadata_extractor_s *metadata, int *is_360);
 
 static int __metadata_extractor_check_and_extract_meta(metadata_extractor_s *metadata, metadata_extractor_type_e metadata_type)
 {
@@ -1083,6 +1084,30 @@ static int __metadata_extractor_get_video_codec(metadata_extractor_s *metadata, 
 	return ret;
 }
 
+
+static int __metadata_extractor_get_is_360(metadata_extractor_s *metadata, int *is_360)
+{
+	int ret = METADATA_EXTRACTOR_ERROR_NONE;
+	char *err_attr_name = NULL;
+	int _is_360 = 0;
+
+	if ((!metadata) ||(!metadata->attr_h)) {
+		metadata_extractor_error("INVALID_PARAMETER(0x%08x)", METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
+		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_TAG_360, &_is_360, NULL);
+	if (ret != FILEINFO_ERROR_NONE) {
+		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
+		SAFE_FREE(err_attr_name);
+		return METADATA_EXTRACTOR_ERROR_OPERATION_FAILED;
+	}
+
+	*is_360 = _is_360;
+
+	return ret;
+}
+
 static int __metadata_extractor_destroy_handle(metadata_extractor_s *metadata)
 {
 	int ret = METADATA_EXTRACTOR_ERROR_NONE;
@@ -1459,6 +1484,12 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 	case METADATA_ROTATE: {
 		is_string = 1;
 		ret = __metadata_extractor_get_rotate(_metadata, &s_value);
+		break;
+	}
+	case METADATA_360: {
+		is_string = 0;
+		ret = __metadata_extractor_get_is_360(_metadata, &i_value);
+		metadata_extractor_debug("tomoryu test call is 360");
 		break;
 	}
 	default:
