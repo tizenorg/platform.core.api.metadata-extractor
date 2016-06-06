@@ -1091,12 +1091,12 @@ static int __metadata_extractor_get_is_360(metadata_extractor_s *metadata, int *
 	char *err_attr_name = NULL;
 	int _is_360 = 0;
 
-	if ((!metadata) ||(!metadata->attr_h)) {
+	if ((!metadata) ||(!metadata->tag_h)) {
 		metadata_extractor_error("INVALID_PARAMETER(0x%08x)", METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
 	}
 
-	ret = mm_file_get_attrs(metadata->attr_h, &err_attr_name, MM_FILE_TAG_360, &_is_360, NULL);
+	ret = mm_file_get_attrs(metadata->tag_h, &err_attr_name, MM_FILE_TAG_360, &_is_360, NULL);
 	if (ret != FILEINFO_ERROR_NONE) {
 		metadata_extractor_error("METADATA_EXTRACTOR_ERROR_OPERATION_FAILED(0x%08x)", ret);
 		SAFE_FREE(err_attr_name);
@@ -1301,7 +1301,7 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 			ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_ATTR);
 	} else if ((attribute >= METADATA_DURATION) && (attribute < METADATA_HAS_AUDIO))
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_ATTR);
-	else if ((attribute > METADATA_HAS_AUDIO) && (attribute <= METADATA_ROTATE))
+	else if (((attribute > METADATA_HAS_AUDIO) && (attribute <= METADATA_ROTATE)) || (attribute == METADATA_360))
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_TAG);
 	else if((attribute == METADATA_AUDIO_CODEC) || (attribute == METADATA_VIDEO_CODEC))
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_ATTR);
@@ -1489,7 +1489,6 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 	case METADATA_360: {
 		is_string = 0;
 		ret = __metadata_extractor_get_is_360(_metadata, &i_value);
-		metadata_extractor_debug("tomoryu test call is 360");
 		break;
 	}
 	default:
