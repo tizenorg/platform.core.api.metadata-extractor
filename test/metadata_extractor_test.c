@@ -252,6 +252,7 @@ static bool __capi_metadata_extractor(metadata_extractor_h metadata)
 	SAFE_FREE(rotate);
 	SAFE_FREE(audio_codec);
 	SAFE_FREE(video_codec);
+	SAFE_FREE(is_360);
 
 	return true;
 
