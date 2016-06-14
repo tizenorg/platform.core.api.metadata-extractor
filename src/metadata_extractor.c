@@ -1091,7 +1091,7 @@ static int __metadata_extractor_get_is_360(metadata_extractor_s *metadata, int *
 	char *err_attr_name = NULL;
 	int _is_360 = 0;
 
-	if ((!metadata) ||(!metadata->tag_h)) {
+	if ((!metadata) || (!metadata->tag_h)) {
 		metadata_extractor_error("INVALID_PARAMETER(0x%08x)", METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER);
 		return METADATA_EXTRACTOR_ERROR_INVALID_PARAMETER;
 	}
@@ -1303,7 +1303,7 @@ int metadata_extractor_get_metadata(metadata_extractor_h metadata, metadata_extr
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_ATTR);
 	else if (((attribute > METADATA_HAS_AUDIO) && (attribute <= METADATA_ROTATE)) || (attribute == METADATA_360))
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_TAG);
-	else if((attribute == METADATA_AUDIO_CODEC) || (attribute == METADATA_VIDEO_CODEC))
+	else if ((attribute == METADATA_AUDIO_CODEC) || (attribute == METADATA_VIDEO_CODEC))
 		ret = __metadata_extractor_check_and_extract_meta(_metadata, METADATA_TYPE_ATTR);
 	else {
 		metadata_extractor_error("INVALID_PARAMETER [%d]", attribute);
